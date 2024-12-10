@@ -18,12 +18,9 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_saplash);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                finish();  // 关闭启动页 Activity
-            }
-        }, 2000);
+        /*new Handler().postDelayed(() -> {
+            finish();  // 关闭启动页 Activity
+        }, 2000);*/
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
