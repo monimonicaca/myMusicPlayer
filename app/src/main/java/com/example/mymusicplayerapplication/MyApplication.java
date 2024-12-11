@@ -27,7 +27,7 @@ public class MyApplication extends Application {
         super.onCreate();
         myApplication=this;
         Log.d("启动Application", "onCreate: ");
-        initQQMusicSDK();
+        //initQQMusicSDK();
        // loginInfo=getSharedPreferences(LOGIN_INFO_FILE_NAME,MODE_PRIVATE);
        // checkIsLogin();
     }

@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">MyMusicPlayerApplication</string>
     <string name="app_welcome_string">Welcome to use the app </string>
+    <string name="tab_recommend">recommend</string>
+    <string name="tab_user_info">user</string>
+    <string name="user_fragment_active_title">user info</string>
+    <string name="recommend_fragment_active_title">recommend music</string>
 </resources>
