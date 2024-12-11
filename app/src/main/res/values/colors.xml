@@ -6,4 +6,5 @@
     <color name="color_default">#FBF8DC</color>
     <color name="color_2">#DEFBDA</color>
     <color name="color_Active">#DAFBE7</color>
+    <color name="default_bg_color">#F3F2F2</color>
 </resources>

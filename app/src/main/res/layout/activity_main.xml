@@ -6,17 +6,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/default_bg_color">
 
     <TextView
         android:id="@+id/title_tv"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:fontFamily="@font/default_font"
         android:text="TextView"
         android:background="@color/color_default"
         android:textSize="@dimen/text_size_large"
         android:gravity="center"/>
     <FrameLayout
+        android:layout_marginTop="10dp"
         android:id="@+id/monitor_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
