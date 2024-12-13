@@ -28,9 +28,6 @@ import com.example.mymusicplayerapplication.fragments.RecommendMusicFragment;
 import com.example.mymusicplayerapplication.fragments.UserInfoFragment;
 import com.example.mymusicplayerapplication.utils.CheckPermissionUtil;
 import com.example.mymusicplayerapplication.utils.ToastUtil;
-import com.tencent.qqmusic.openapisdk.core.OpenApiSDK;
-import com.tencent.qqmusic.openapisdk.core.openapi.OpenApiResponse;
-import com.tencent.qqmusic.openapisdk.model.Folder;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -123,14 +120,6 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         CheckPermissionUtil.checkPermission(this,PERMISSION_READ_PHONE_STATE,READ_PHONE_STATE_CODE);
         CheckPermissionUtil.checkPermission(this,PERMISSION_INTERNET,INTERNET_CODE);
         CheckPermissionUtil.checkPermission(this,PERMISSION_ACCESS_NETWORK_STATE,ACCESS_NETWORK_STATE_CODE);
-        OpenApiSDK.getOpenApi().fetchFolderDetail("123456", response -> {
-            if (response.isSuccess()) {
-                Log.e("TAG", "获取歌单详情: " + response.getData());
-            } else {
-                Log.e("TAG", "获取歌单详情失败: " + response.getErrorMsg());
-            }
-            return Unit.INSTANCE;
-        });
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
