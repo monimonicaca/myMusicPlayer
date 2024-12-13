@@ -123,19 +123,6 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         CheckPermissionUtil.checkPermission(this,PERMISSION_READ_PHONE_STATE,READ_PHONE_STATE_CODE);
         CheckPermissionUtil.checkPermission(this,PERMISSION_INTERNET,INTERNET_CODE);
         CheckPermissionUtil.checkPermission(this,PERMISSION_ACCESS_NETWORK_STATE,ACCESS_NETWORK_STATE_CODE);
-        /*OpenApiSDK.getOpenApi().fetchFolderDetail("123456", new Function1<OpenApiResponse<Folder>, Unit>() {
-            @Override
-            public Unit invoke(OpenApiResponse<Folder> folderOpenApiResponse) {
-                if (folderOpenApiResponse.isSuccess()) {
-                    Folder folder = folderOpenApiResponse.getData();
-                    Log.e("TAG", "获取歌单详情: " + folder);
-                } else {
-                    Log.e("TAG", "获取歌单详情失败: " + folderOpenApiResponse.getErrorMsg());
-                }
-                return Unit.INSTANCE; // Kotlin 的 Unit 需要返回实例
-            }
-
-        });*/
         OpenApiSDK.getOpenApi().fetchFolderDetail("123456", response -> {
             if (response.isSuccess()) {
                 Log.e("TAG", "获取歌单详情: " + response.getData());
@@ -144,9 +131,6 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
             }
             return Unit.INSTANCE;
         });
-
-
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
