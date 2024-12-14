@@ -18,7 +18,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.mymusicplayerapplication.R;
 import com.example.mymusicplayerapplication.utils.CheckPermissionUtil;
 import com.example.mymusicplayerapplication.utils.ToastUtil;
-import com.tencent.qqmusic.openapisdk.model.SongInfo;
 
 public class SplashActivity extends AppCompatActivity {
     @Override

@@ -8,7 +8,7 @@ android {
     compileSdk = 34
     defaultConfig {
         applicationId = "com.example.mymusicplayerapplication"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -38,4 +38,5 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation (libs.appcompat)
     implementation ("androidx.recyclerview:recyclerview:1.3.0")
+    implementation ("com.alibaba.fastjson2:fastjson2:2.0.53")
 }

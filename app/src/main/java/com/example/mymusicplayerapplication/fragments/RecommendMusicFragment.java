@@ -1,14 +1,25 @@
 package com.example.mymusicplayerapplication.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mymusicplayerapplication.R;
+import com.example.mymusicplayerapplication.service.IRecommendService;
+import com.example.mymusicplayerapplication.service.impl.RecommendService;
+import com.example.mymusicplayerapplication.utils.NetUtil;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,11 +28,11 @@ import com.example.mymusicplayerapplication.R;
  */
 public class RecommendMusicFragment extends Fragment {
 
+    private Map params;
+    private static final String RECOMMEND_API = "http://mobilecdnbj.kugou.com/api/v5/special/recommend";
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private Context context;
     private String mParam1;
     private String mParam2;
 
@@ -31,10 +42,6 @@ public class RecommendMusicFragment extends Fragment {
 
     public static RecommendMusicFragment newInstance() {
         RecommendMusicFragment fragment = new RecommendMusicFragment();
-        /*Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);*/
         return fragment;
     }
 
@@ -42,15 +49,53 @@ public class RecommendMusicFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        initRequestParams();
+        IRecommendService iRecommendService=new RecommendService(params,getContext());
+        iRecommendService.getRecommendSongList();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_recommend_music, container, false);
     }
+    private void initRequestParams(){
+        params=new HashMap();
+        params.put("recommend_expire","0");
+        params.put("sign","52186982747e1404d426fa3f2a1e8ee4");
+        params.put("plat","0");
+        params.put("uid","0");
+        params.put("version","9108");
+        params.put("page","1");
+        params.put("area_code","1");
+        params.put("appid","1005");
+        params.put("mid","286974383886022203545511837994020015101");
+        params.put("_t","1545746286");
+    }
+    class MyThread extends Thread{
+        @Override
+        public void run() {
+            super.run();
+            try {
+                String result= NetUtil.net(RECOMMEND_API,params,"GET");
+                JSONObject jsonObject = new JSONObject(result);
+                JSONArray jsonArray=jsonObject.getJSONObject("data").getJSONArray("list");
+                for (int i=0;i<jsonArray.length();i++){
+                   JSONObject j=jsonArray.getJSONObject(i);
+                    Log.d(j.getString("reason"), j.getJSONArray("songs").toString());
+                }
+                Log.d("推荐音乐结果", jsonArray.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
 }
