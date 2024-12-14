@@ -102,7 +102,7 @@ public class NetUtil {
             try {
                 sb.append(i.getKey()).append("=").append(URLEncoder.encode(i.getValue()+"","UTF-8")).append("&");
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                ExceptionHandleUtil.logException(e);
             }
         }
         return sb.toString();

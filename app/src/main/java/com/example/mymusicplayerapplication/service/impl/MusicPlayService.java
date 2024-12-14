@@ -3,7 +3,9 @@ package com.example.mymusicplayerapplication.service.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.mymusicplayerapplication.activities.MusicPlayerActivity;
 import com.example.mymusicplayerapplication.service.IMusicPlayService;
+import com.example.mymusicplayerapplication.utils.ExceptionHandleUtil;
 import com.example.mymusicplayerapplication.utils.NetUtil;
 import com.example.mymusicplayerapplication.utils.ToastUtil;
 
@@ -31,7 +33,8 @@ public class MusicPlayService implements IMusicPlayService {
             String playinfo= NetUtil.net(PLAY_INFO_URL,params,"GET");
             Log.d("音乐信息", playinfo);
         } catch (IOException e) {
-            ToastUtil.showToast(2000,"歌曲获取失败",mContext);
+            ExceptionHandleUtil.logException(e);
+            ExceptionHandleUtil.showException(mContext,"歌曲获取失败");
         }
 
         return null;

@@ -6,6 +6,7 @@ import android.util.Log;
 import com.alibaba.fastjson2.JSON;
 import com.example.mymusicplayerapplication.entity.SongEntity;
 import com.example.mymusicplayerapplication.service.IRecommendService;
+import com.example.mymusicplayerapplication.utils.ExceptionHandleUtil;
 import com.example.mymusicplayerapplication.utils.NetUtil;
 import com.example.mymusicplayerapplication.utils.ToastUtil;
 
@@ -43,8 +44,9 @@ public class RecommendService implements IRecommendService {
             //Log.d("获取到的数据的数量", ""+dataList.length());
             transJsonToSongList(dataList);
         } catch (Exception e) {
-            e.printStackTrace();
-            ToastUtil.showToast(2000,"网路请求失败",mContext);
+
+            ExceptionHandleUtil.logException(e);
+            ExceptionHandleUtil.showException(mContext,"网路请求失败");
         }
         return songList;
     }
