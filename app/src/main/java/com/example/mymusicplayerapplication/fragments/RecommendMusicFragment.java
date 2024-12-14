@@ -29,10 +29,8 @@ import java.util.Map;
 public class RecommendMusicFragment extends Fragment {
 
     private Map params;
-    private static final String RECOMMEND_API = "http://mobilecdnbj.kugou.com/api/v5/special/recommend";
-
+    private IRecommendService iRecommendService;
     private static final String ARG_PARAM2 = "param2";
-    private Context context;
     private String mParam1;
     private String mParam2;
 
@@ -53,8 +51,8 @@ public class RecommendMusicFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         initRequestParams();
-        IRecommendService iRecommendService=new RecommendService(params,getContext());
-        iRecommendService.getRecommendSongList();
+        iRecommendService=RecommendService.getInstance(getContext());
+        iRecommendService.getRecommendSongList(params);
     }
 
     @Override
@@ -76,26 +74,6 @@ public class RecommendMusicFragment extends Fragment {
         params.put("appid","1005");
         params.put("mid","286974383886022203545511837994020015101");
         params.put("_t","1545746286");
-    }
-    class MyThread extends Thread{
-        @Override
-        public void run() {
-            super.run();
-            try {
-                String result= NetUtil.net(RECOMMEND_API,params,"GET");
-                JSONObject jsonObject = new JSONObject(result);
-                JSONArray jsonArray=jsonObject.getJSONObject("data").getJSONArray("list");
-                for (int i=0;i<jsonArray.length();i++){
-                   JSONObject j=jsonArray.getJSONObject(i);
-                    Log.d(j.getString("reason"), j.getJSONArray("songs").toString());
-                }
-                Log.d("推荐音乐结果", jsonArray.toString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-
     }
 
 }

@@ -21,20 +21,26 @@ public class RecommendService implements IRecommendService {
     private Map params;
     private Context mContext;
     private static final String RECOMMEND_API = "http://mobilecdnbj.kugou.com/api/v5/special/recommend";
+    private static RecommendService recommendService;
     private List<SongEntity> songList;
-    public RecommendService(Map params, Context context) {
-        this.params = params;
+    private RecommendService(Context context) {
         mContext=context;
+        songList=new ArrayList<>();
     }
-
+    public static RecommendService getInstance(Context context){
+        if (recommendService==null){
+            recommendService=new RecommendService(context);
+        }
+        return recommendService;
+    }
     @Override
-    public List<SongEntity> getRecommendSongList() {
+    public List<SongEntity> getRecommendSongList(Map params) {
+        this.params=params;
         MyThread myThread=new MyThread();
         myThread.start();
         return songList;
     }
     private List<SongEntity> transJsonToSongList(JSONArray jsonArray){
-        songList=new ArrayList<>();
         //Log.d("传入的数据的数量", ""+jsonArray.length());
         for (int i=0;i<jsonArray.length();i++){
             JSONObject j= null;
