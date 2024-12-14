@@ -4,11 +4,11 @@ import com.alibaba.fastjson2.annotation.JSONField;
 
 public class SongEntity {
     private String hash;
-    private String sq_hash;
-    @JSONField(name = "320_hash")
+    private String sqhash;
+    @JSONField(name = "320hash")
     private String ttzhash;
     private String filename;
-    private String mv_hash;
+    private String mvhash;
     private int duration;
     private String extname;
     private String remark;
@@ -28,10 +28,10 @@ public class SongEntity {
     public String toString() {
         return "SongEntity{" +
                 "hash='" + hash + '\'' +
-                ", sq_hash='" + sq_hash + '\'' +
+                ", sqhash='" + sqhash + '\'' +
                 ", ttzhash='" + ttzhash + '\'' +
                 ", filename='" + filename + '\'' +
-                ", mv_hash='" + mv_hash + '\'' +
+                ", mvhash='" + mvhash + '\'' +
                 ", duration=" + duration +
                 ", extname='" + extname + '\'' +
                 ", remark='" + remark + '\'' +
@@ -48,12 +48,20 @@ public class SongEntity {
                 '}';
     }
 
-    public String getSq_hash() {
-        return sq_hash;
+    public String getSqhash() {
+        return sqhash;
     }
 
-    public void setSq_hash(String sq_hash) {
-        this.sq_hash = sq_hash;
+    public void setSqhash(String sqhash) {
+        this.sqhash = sqhash;
+    }
+
+    public String getMvhash() {
+        return mvhash;
+    }
+
+    public void setMvhash(String mvhash) {
+        this.mvhash = mvhash;
     }
 
     public String getTtzhash() {
@@ -72,13 +80,6 @@ public class SongEntity {
         this.filename = filename;
     }
 
-    public String getMv_hash() {
-        return mv_hash;
-    }
-
-    public void setMv_hash(String mv_hash) {
-        this.mv_hash = mv_hash;
-    }
 
     public int getDuration() {
         return duration;

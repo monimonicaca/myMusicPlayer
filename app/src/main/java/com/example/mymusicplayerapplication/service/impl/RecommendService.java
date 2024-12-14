@@ -36,8 +36,16 @@ public class RecommendService implements IRecommendService {
     @Override
     public List<SongEntity> getRecommendSongList(Map params) {
         this.params=params;
-        MyThread myThread=new MyThread();
-        myThread.start();
+        try {
+            String result= NetUtil.net(RECOMMEND_API,params,"GET");
+            JSONObject jsonObject = new JSONObject(result);
+            JSONArray dataList=jsonObject.getJSONObject("data").getJSONArray("list");
+            //Log.d("获取到的数据的数量", ""+dataList.length());
+            transJsonToSongList(dataList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastUtil.showToast(2000,"网路请求失败",mContext);
+        }
         return songList;
     }
     private List<SongEntity> transJsonToSongList(JSONArray jsonArray){
@@ -51,29 +59,12 @@ public class RecommendService implements IRecommendService {
                 //Log.d(j.getString("reason"), j.getJSONArray("songs").toString());
                 songList.addAll(songEntityList);
                 //Log.d("转化后实体集合的数量", songList.size()+"");
-                //Log.d("songEntityList", songList.toString());
+                //Log.d("songList", songList.toString());
             } catch (JSONException e) {
-                Log.e("JSONToEntityError", "由json数据转换为实体集合出现错误",e);
-                throw new RuntimeException(e);
+                Log.e("JSONToEntityError", "由json数据转换为实体集合出现错误", e);
             }
         }
         return songList;
-    }
-    class MyThread extends Thread{
-        @Override
-        public void run() {
-            super.run();
-            try {
-                String result= NetUtil.net(RECOMMEND_API,params,"GET");
-                JSONObject jsonObject = new JSONObject(result);
-                JSONArray dataList=jsonObject.getJSONObject("data").getJSONArray("list");
-                //Log.d("获取到的数据的数量", ""+dataList.length());
-                transJsonToSongList(dataList);
-            } catch (Exception e) {
-                e.printStackTrace();
-                ToastUtil.showToast(2000,"网路请求失败",mContext);
-            }
-        }
     }
 
 }
