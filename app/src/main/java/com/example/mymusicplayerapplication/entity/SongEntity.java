@@ -2,7 +2,9 @@ package com.example.mymusicplayerapplication.entity;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 
-public class SongEntity {
+import java.io.Serializable;
+
+public class SongEntity implements Serializable {
     private String hash;
     private String sqhash;
     @JSONField(name = "320hash")

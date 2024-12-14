@@ -1,6 +1,7 @@
 package com.example.mymusicplayerapplication.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson2.JSON;
 import com.example.mymusicplayerapplication.R;
+import com.example.mymusicplayerapplication.activities.MusicPlayerActivity;
 import com.example.mymusicplayerapplication.adapter.RecommendMusicItemAdapter;
 import com.example.mymusicplayerapplication.entity.SongEntity;
 import com.example.mymusicplayerapplication.service.IRecommendService;
@@ -47,7 +49,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
 
     private ListView recommend_musics_lv;
 
-    private String selected_hash;
+
 
     public RecommendMusicFragment() {
     }
@@ -91,8 +93,11 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        selected_hash=songList.get(position).getHash();
-        new PlayInfoThread().start();
+        Intent intent=new Intent(getContext(), MusicPlayerActivity.class);
+        Bundle bundle=new Bundle();
+        bundle.putSerializable("song",songList.get(position));
+        intent.putExtras(bundle);
+        startActivity(intent);
         Log.d("点击的是", songList.get(position).toString());
     }
 
@@ -113,17 +118,11 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
             if (msg.what==RECOMMEND_MUSIC_WHAT){
                 recommendMusicItemAdapter=new RecommendMusicItemAdapter(getContext(),songList);
                 recommend_musics_lv.setAdapter(recommendMusicItemAdapter);
-                Log.d("songList", JSON.toJSONString(songList));
+               // Log.d("songList", JSON.toJSONString(songList));
             }
         }
     }
-    class PlayInfoThread extends Thread{
-        @Override
-        public void run() {
-            super.run();
-            new MusicPlayService(getContext()).getMusicUrl(selected_hash);
-        }
-    }
+
 
 
 }
