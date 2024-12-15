@@ -1,4 +1,4 @@
-package com.example.mymusicplayerapplication.fragments;
+package com.example.mymusicplayerapplication.ui.activities.fragments;
 
 import android.os.Bundle;
 

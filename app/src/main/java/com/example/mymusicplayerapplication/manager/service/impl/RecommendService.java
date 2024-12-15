@@ -1,14 +1,12 @@
-package com.example.mymusicplayerapplication.service.impl;
+package com.example.mymusicplayerapplication.manager.service.impl;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.alibaba.fastjson2.JSON;
-import com.example.mymusicplayerapplication.entity.SongEntity;
-import com.example.mymusicplayerapplication.service.IRecommendService;
+import com.example.mymusicplayerapplication.data.model.SongEntity;
+import com.example.mymusicplayerapplication.manager.service.IRecommendService;
 import com.example.mymusicplayerapplication.utils.ExceptionHandleUtil;
 import com.example.mymusicplayerapplication.utils.NetUtil;
-import com.example.mymusicplayerapplication.utils.ToastUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;

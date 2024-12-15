@@ -1,4 +1,4 @@
-package com.example.mymusicplayerapplication.entity;
+package com.example.mymusicplayerapplication.data.model;
 
 import java.util.Arrays;
 

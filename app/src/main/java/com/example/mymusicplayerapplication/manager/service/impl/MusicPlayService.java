@@ -1,13 +1,11 @@
-package com.example.mymusicplayerapplication.service.impl;
+package com.example.mymusicplayerapplication.manager.service.impl;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.example.mymusicplayerapplication.activities.MusicPlayerActivity;
-import com.example.mymusicplayerapplication.service.IMusicPlayService;
+import com.example.mymusicplayerapplication.manager.service.IMusicPlayService;
 import com.example.mymusicplayerapplication.utils.ExceptionHandleUtil;
 import com.example.mymusicplayerapplication.utils.NetUtil;
-import com.example.mymusicplayerapplication.utils.ToastUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,7 +34,7 @@ public class MusicPlayService implements IMusicPlayService {
             ExceptionHandleUtil.logException(e);
             ExceptionHandleUtil.showException(mContext,"歌曲获取失败");
         }
-
         return null;
     }
 }
+

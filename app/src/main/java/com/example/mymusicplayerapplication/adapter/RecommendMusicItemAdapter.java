@@ -6,11 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mymusicplayerapplication.R;
-import com.example.mymusicplayerapplication.entity.SongEntity;
+import com.example.mymusicplayerapplication.data.model.SongEntity;
 
 import java.util.List;
 

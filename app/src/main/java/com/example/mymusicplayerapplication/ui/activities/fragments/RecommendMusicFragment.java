@@ -1,6 +1,5 @@
-package com.example.mymusicplayerapplication.fragments;
+package com.example.mymusicplayerapplication.ui.activities.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,29 +9,20 @@ import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.os.Vibrator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.alibaba.fastjson2.JSON;
 import com.example.mymusicplayerapplication.R;
-import com.example.mymusicplayerapplication.activities.MusicPlayerActivity;
+import com.example.mymusicplayerapplication.ui.activities.MusicPlayerActivity;
 import com.example.mymusicplayerapplication.adapter.RecommendMusicItemAdapter;
-import com.example.mymusicplayerapplication.entity.SongEntity;
-import com.example.mymusicplayerapplication.service.IRecommendService;
-import com.example.mymusicplayerapplication.service.impl.MusicPlayService;
-import com.example.mymusicplayerapplication.service.impl.RecommendService;
+import com.example.mymusicplayerapplication.data.model.SongEntity;
+import com.example.mymusicplayerapplication.manager.service.IRecommendService;
+import com.example.mymusicplayerapplication.manager.service.impl.RecommendService;
 import com.example.mymusicplayerapplication.utils.ExceptionHandleUtil;
-import com.example.mymusicplayerapplication.utils.NetUtil;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;

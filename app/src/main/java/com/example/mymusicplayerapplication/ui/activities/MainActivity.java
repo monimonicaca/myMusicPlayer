@@ -1,7 +1,5 @@
-package com.example.mymusicplayerapplication.activities;
+package com.example.mymusicplayerapplication.ui.activities;
 
-
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.Manifest;
 import android.content.Intent;
@@ -24,13 +22,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.mymusicplayerapplication.R;
-import com.example.mymusicplayerapplication.fragments.RecommendMusicFragment;
-import com.example.mymusicplayerapplication.fragments.UserInfoFragment;
+import com.example.mymusicplayerapplication.ui.activities.fragments.RecommendMusicFragment;
+import com.example.mymusicplayerapplication.ui.activities.fragments.UserInfoFragment;
 import com.example.mymusicplayerapplication.utils.CheckPermissionUtil;
 import com.example.mymusicplayerapplication.utils.ToastUtil;
-
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 
 public class MainActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
     private TextView title_tv;
