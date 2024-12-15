@@ -1,4 +1,4 @@
-package com.example.mymusicplayerapplication.ui.activities;
+package com.example.mymusicplayerapplication.ui.activities.main;
 
 
 import android.Manifest;
@@ -22,8 +22,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.mymusicplayerapplication.R;
-import com.example.mymusicplayerapplication.ui.activities.fragments.RecommendMusicFragment;
-import com.example.mymusicplayerapplication.ui.activities.fragments.UserInfoFragment;
+import com.example.mymusicplayerapplication.ui.activities.main.fragments.RecommendMusicFragment;
+import com.example.mymusicplayerapplication.ui.activities.main.fragments.UserInfoFragment;
 import com.example.mymusicplayerapplication.utils.CheckPermissionUtil;
 import com.example.mymusicplayerapplication.utils.ToastUtil;
 

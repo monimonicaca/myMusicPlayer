@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.mymusicplayerapplication.R;
+import com.example.mymusicplayerapplication.ui.activities.main.MainActivity;
 
 public class SplashActivity extends AppCompatActivity {
     @Override

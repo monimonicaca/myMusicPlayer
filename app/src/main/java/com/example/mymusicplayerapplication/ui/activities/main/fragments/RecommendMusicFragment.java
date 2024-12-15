@@ -1,4 +1,4 @@
-package com.example.mymusicplayerapplication.ui.activities.fragments;
+package com.example.mymusicplayerapplication.ui.activities.main.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.mymusicplayerapplication.R;
+import com.example.mymusicplayerapplication.manager.PlayListManager;
 import com.example.mymusicplayerapplication.ui.activities.MusicPlayerActivity;
 import com.example.mymusicplayerapplication.adapter.RecommendMusicItemAdapter;
 import com.example.mymusicplayerapplication.data.model.SongEntity;
@@ -31,14 +32,25 @@ import java.util.Map;
 public class RecommendMusicFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static final String ARG_PARAM2 = "param2";
     private static final int RECOMMEND_MUSIC_WHAT=1;
+    /**
+     * @param params 请求的参数
+     * @param page 请求第几页的数据
+     * @param recommendMusicItemAdapter ListView的适配器
+     * @param iRecommendService 用于获取网络请求
+     * @param songList ListView的数据
+     * @param playListManager 用于管理当前正在播放的数据
+     * @param myHandler 解决message
+     * @param recommend_musics_lv ListView
+     * @param recommend_iv 显示图片
+     */
     private Map params;
     private int page=1;
     private RecommendMusicItemAdapter recommendMusicItemAdapter;
     private IRecommendService iRecommendService;
     private List<SongEntity> songList;
+    private PlayListManager playListManager;
     private MyHandler myHandler;
     private ImageView recommend_iv;
-
     private ListView recommend_musics_lv;
 
 
@@ -54,6 +66,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        playListManager=PlayListManager.getInstance();
         initRequestParams();
         iRecommendService=RecommendService.getInstance(getContext());
         RecommendMusicThread recommendMusicThread=new RecommendMusicThread();
@@ -86,6 +99,8 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        /*这里有可能需要将数据写入数据库*/
+        playListManager.addSong(songList.get(position));
         Intent intent=new Intent(getContext(), MusicPlayerActivity.class);
         Bundle bundle=new Bundle();
         bundle.putSerializable("song",songList.get(position));

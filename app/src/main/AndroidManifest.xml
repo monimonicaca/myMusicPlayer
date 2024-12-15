@@ -27,7 +27,7 @@
             android:name=".ui.activities.MusicPlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.MainActivity"
+            android:name=".ui.activities.main.MainActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activities.SplashActivity"
