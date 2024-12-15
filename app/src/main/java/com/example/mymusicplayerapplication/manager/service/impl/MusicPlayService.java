@@ -3,6 +3,10 @@ package com.example.mymusicplayerapplication.manager.service.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.alibaba.fastjson2.JSON;
+import com.example.mymusicplayerapplication.data.model.PlayInfoEntity;
+import com.example.mymusicplayerapplication.data.model.SongEntity;
+import com.example.mymusicplayerapplication.manager.PlayListManager;
 import com.example.mymusicplayerapplication.manager.service.IMusicPlayService;
 import com.example.mymusicplayerapplication.utils.ExceptionHandleUtil;
 import com.example.mymusicplayerapplication.utils.NetUtil;
@@ -23,18 +27,26 @@ public class MusicPlayService implements IMusicPlayService {
     }
 
     @Override
-    public String getMusicUrl(String hash) {
+    public PlayInfoEntity getPlayInfo(String hash) {
         Map params=new HashMap();
         params.put(PARAM_CMD_KEY,PARAM_CMD_VALUE);
         params.put(PARAM_HASH_KEY,hash);
+        PlayInfoEntity playInfoEntity=null;
         try {
             String playinfo= NetUtil.net(PLAY_INFO_URL,params,"GET");
-            Log.d("音乐信息", playinfo);
+            playInfoEntity= JSON.parseObject(playinfo,PlayInfoEntity.class);
+            Log.d("音乐信息", playInfoEntity.toString());
         } catch (IOException e) {
             ExceptionHandleUtil.logException(e);
             ExceptionHandleUtil.showException(mContext,"歌曲获取失败");
         }
-        return null;
+        return playInfoEntity;
+    }
+
+    @Override
+    public int getPlayIndex(SongEntity song) {
+
+        return PlayListManager.getInstance().getSongList().indexOf(song);
     }
 }
 

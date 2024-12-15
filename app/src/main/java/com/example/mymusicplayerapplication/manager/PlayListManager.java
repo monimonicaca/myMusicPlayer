@@ -9,8 +9,10 @@ public class PlayListManager {
     //数据库中只用存hash值和url
     /**
      * @param songList 共享的数据
+     *
      */
     private List<SongEntity> playList;
+    private int index;
     private static PlayListManager playListManager;
     private PlayListManager(){
         /*先从数据库中读取数据，如果没有就直接new一个*/

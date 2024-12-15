@@ -70,7 +70,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         initRequestParams();
         iRecommendService=RecommendService.getInstance(getContext());
         RecommendMusicThread recommendMusicThread=new RecommendMusicThread();
-        myHandler=new MyHandler(Looper.getMainLooper());
+        myHandler=new MyHandler();
         recommendMusicThread.start();
     }
 
@@ -120,10 +120,6 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         }
     }
     class MyHandler extends Handler{
-        public MyHandler(Looper mainLooper) {
-            super(mainLooper);
-        }
-
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
