@@ -39,14 +39,13 @@ public class RecommendService implements IRecommendService {
         this.params=params;
         try {
             String result= NetUtil.net(RECOMMEND_API,params,"GET");
+            ///Log.d("result", result);
             JSONObject jsonObject = new JSONObject(result);
             JSONArray dataList=jsonObject.getJSONObject("data").getJSONArray("list");
             //Log.d("获取到的数据的数量", ""+dataList.length());
             transJsonToSongList(dataList);
         } catch (Exception e) {
-
             ExceptionHandleUtil.logException(e);
-            ExceptionHandleUtil.showException(mContext,"网路请求失败");
         }
         return songList;
     }
@@ -63,7 +62,7 @@ public class RecommendService implements IRecommendService {
                 //Log.d("转化后实体集合的数量", songList.size()+"");
                 //Log.d("songList", songList.toString());
             } catch (JSONException e) {
-                Log.e("JSONToEntityError", "由json数据转换为实体集合出现错误", e);
+                ExceptionHandleUtil.logException(e);
             }
         }
         return songList;

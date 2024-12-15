@@ -36,6 +36,8 @@ public class MusicPlayerActivity extends AppCompatActivity {
         assert bundle != null;
         return  (SongEntity) bundle.get("song");
     }
+
+    private
     class PlayInfoThread extends Thread{
         @Override
         public void run() {

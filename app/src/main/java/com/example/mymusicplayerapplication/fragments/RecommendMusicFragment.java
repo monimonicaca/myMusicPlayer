@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.Log;
@@ -27,6 +28,7 @@ import com.example.mymusicplayerapplication.entity.SongEntity;
 import com.example.mymusicplayerapplication.service.IRecommendService;
 import com.example.mymusicplayerapplication.service.impl.MusicPlayService;
 import com.example.mymusicplayerapplication.service.impl.RecommendService;
+import com.example.mymusicplayerapplication.utils.ExceptionHandleUtil;
 import com.example.mymusicplayerapplication.utils.NetUtil;
 
 import org.json.JSONArray;
@@ -44,7 +46,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     private RecommendMusicItemAdapter recommendMusicItemAdapter;
     private IRecommendService iRecommendService;
     private List<SongEntity> songList;
-    private MyHandler myHandler=new MyHandler();
+    private MyHandler myHandler;
     private ImageView recommend_iv;
 
     private ListView recommend_musics_lv;
@@ -65,6 +67,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         initRequestParams();
         iRecommendService=RecommendService.getInstance(getContext());
         RecommendMusicThread recommendMusicThread=new RecommendMusicThread();
+        myHandler=new MyHandler(Looper.getMainLooper());
         recommendMusicThread.start();
     }
 
@@ -98,7 +101,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         bundle.putSerializable("song",songList.get(position));
         intent.putExtras(bundle);
         startActivity(intent);
-        Log.d("点击的是", songList.get(position).toString());
+        //Log.d("点击的是", songList.get(position).toString());
     }
 
     class RecommendMusicThread extends Thread{
@@ -112,10 +115,17 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         }
     }
     class MyHandler extends Handler{
+        public MyHandler(Looper mainLooper) {
+            super(mainLooper);
+        }
+
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             if (msg.what==RECOMMEND_MUSIC_WHAT){
+                if (songList.isEmpty()){
+                    ExceptionHandleUtil.showException(getContext(),"网络请求数据失败");
+                }
                 recommendMusicItemAdapter=new RecommendMusicItemAdapter(getContext(),songList);
                 recommend_musics_lv.setAdapter(recommendMusicItemAdapter);
                // Log.d("songList", JSON.toJSONString(songList));
