@@ -35,7 +35,7 @@ public class MusicPlayService implements IMusicPlayService {
         try {
             String playinfo= NetUtil.net(PLAY_INFO_URL,params,"GET");
             playInfoEntity= JSON.parseObject(playinfo,PlayInfoEntity.class);
-            Log.d("音乐信息", playInfoEntity.toString());
+            //Log.d("音乐信息", playInfoEntity.toString());
         } catch (IOException e) {
             ExceptionHandleUtil.logException(e);
             ExceptionHandleUtil.showException(mContext,"歌曲获取失败");
