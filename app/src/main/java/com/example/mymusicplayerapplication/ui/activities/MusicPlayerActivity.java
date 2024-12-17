@@ -104,7 +104,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         return  (SongEntity) bundle.get("song");
     }
     private void startUiUpdateTask() {
-        Log.d("startUiUpdateTask", "startUiUpdateTask: ");
+       // Log.d("startUiUpdateTask", "startUiUpdateTask: ");
         executorService.execute(new Runnable() {
             @Override
             public void run() {
@@ -142,8 +142,8 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         if (id==close_music_view_iv.getId()){
             if (mediaPlayer.isPlaying()){
                 mediaPlayer.stop();
-                flag=false;
             }
+            flag=false;
             finish();
         } else if (id==previous_music_ib.getId()) {
 
@@ -197,6 +197,9 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         if (executorService != null) {
             executorService.shutdown();
             executorService=null;
+        }
+        if (playInfoThread!=null&&playInfoThread.isAlive()){
+            playInfoThread.interrupt();
         }
     }
     private class PlayInfoThread extends Thread{

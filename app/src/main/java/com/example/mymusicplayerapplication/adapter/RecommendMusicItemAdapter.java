@@ -10,18 +10,20 @@ import android.widget.TextView;
 
 import com.example.mymusicplayerapplication.R;
 import com.example.mymusicplayerapplication.data.model.SongEntity;
+import com.example.mymusicplayerapplication.manager.PlayListManager;
 
 import java.util.List;
 
-public class RecommendMusicItemAdapter extends BaseAdapter {
+public class RecommendMusicItemAdapter extends BaseAdapter  {
     private Context context;
     private List<SongEntity> songList;
+    private OnAddSongListener onAddSongListener;
+    private OnMoreOperationListener moreOperationListener;
 
     public RecommendMusicItemAdapter(Context context, List<SongEntity> songList) {
         this.context = context;
         this.songList = songList;
     }
-
     public void setSongList(List<SongEntity> songList) {
         this.songList = songList;
     }
@@ -65,7 +67,34 @@ public class RecommendMusicItemAdapter extends BaseAdapter {
         }else {
             viewHolder.sq_tv.setVisibility(View.GONE);
         }
+        viewHolder.add_ib.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onAddSongListener.OnAddSongClick(position);
+            }
+        });
+        viewHolder.more_ib.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moreOperationListener.OnMoreOperationClick(position);
+            }
+        });
         return convertView;
+    }
+
+    public void setOnAddSongListener(OnAddSongListener onAddSongListener) {
+        this.onAddSongListener = onAddSongListener;
+    }
+
+    public void setMoreOperationListener(OnMoreOperationListener moreOperationListener) {
+        this.moreOperationListener = moreOperationListener;
+    }
+
+    public interface OnAddSongListener{
+        void OnAddSongClick(int position);
+    }
+    public interface OnMoreOperationListener{
+        void OnMoreOperationClick(int position);
     }
     public final class ViewHolder{
         public TextView song_name_tv;

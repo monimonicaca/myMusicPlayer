@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -25,14 +26,15 @@ import com.example.mymusicplayerapplication.data.model.SongEntity;
 import com.example.mymusicplayerapplication.manager.service.IRecommendService;
 import com.example.mymusicplayerapplication.manager.service.impl.RecommendService;
 import com.example.mymusicplayerapplication.utils.ExceptionHandleUtil;
+import com.example.mymusicplayerapplication.utils.ToastUtil;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RecommendMusicFragment extends Fragment implements AdapterView.OnItemClickListener {
-    private static final String ARG_PARAM2 = "param2";
+public class RecommendMusicFragment extends Fragment implements AdapterView.OnItemClickListener, AbsListView.OnScrollListener {
     private static final int RECOMMEND_MUSIC_WHAT=1;
+    private static final int RECOMMEND_MORE_MUSIC_WHAT=2;
     /**
      * @param params 请求的参数
      * @param page 请求第几页的数据
@@ -43,6 +45,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
      * @param myHandler 解决message
      * @param recommend_musics_lv ListView
      * @param recommend_iv 显示图片
+     * @param isBottom 是否触底加载
      */
     private Map params;
     private int page=1;
@@ -53,9 +56,8 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     private MyHandler myHandler;
     private ImageView recommend_iv;
     private ListView recommend_musics_lv;
-
-
-
+    private boolean isBottom=false;
+    private RecommendMusicThread recommendMusicThread;
     public RecommendMusicFragment() {
     }
 
@@ -70,7 +72,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         playListManager=PlayListManager.getInstance();
         initRequestParams();
         iRecommendService=RecommendService.getInstance(getContext());
-        RecommendMusicThread recommendMusicThread=new RecommendMusicThread();
+        recommendMusicThread=new RecommendMusicThread();
         myHandler=new MyHandler();
         recommendMusicThread.start();
     }
@@ -82,6 +84,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         recommend_musics_lv=view.findViewById(R.id.recommend_musics_lv);
         recommend_iv=view.findViewById(R.id.recommend_iv);
         recommend_musics_lv.setOnItemClickListener(this);
+        recommend_musics_lv.setOnScrollListener(this);
         return view;
     }
     private void initRequestParams(){
@@ -109,6 +112,39 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         startActivity(intent);
         //Log.d("点击的是", songList.get(position).toString());
     }
+    public void addSong(int position){
+        playListManager.addSong(songList.get(position));
+        ToastUtil.showToast(1000,"添加成功",getContext());
+        //Log.d("playList", playListManager.getSongList().toString());
+    }
+    public void more(int position){
+        Log.d("more",songList.get(position).toString());
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (scrollState == SCROLL_STATE_IDLE ) {
+            if (view.getLastVisiblePosition() == view.getCount() - 1) {
+                Log.d("onScrollStateChanged", "触底了");
+                isBottom=true;
+                recommendMusicThread=new RecommendMusicThread();
+                recommendMusicThread.start();
+            }
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (recommendMusicThread!=null&&recommendMusicThread.isAlive()){
+            recommendMusicThread.interrupt();
+        }
+    }
 
     class RecommendMusicThread extends Thread{
         @Override
@@ -116,7 +152,11 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
             super.run();
             songList=iRecommendService.getRecommendSongList(params);
             Message message=new Message();
-            message.what=RECOMMEND_MUSIC_WHAT;
+            if(isBottom){
+                message.what=RECOMMEND_MORE_MUSIC_WHAT;
+            }else {
+                message.what = RECOMMEND_MUSIC_WHAT;
+            }
             myHandler.sendMessage(message);
         }
     }
@@ -130,7 +170,25 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
                 }
                 recommendMusicItemAdapter=new RecommendMusicItemAdapter(getContext(),songList);
                 recommend_musics_lv.setAdapter(recommendMusicItemAdapter);
+                recommendMusicItemAdapter.setOnAddSongListener(new RecommendMusicItemAdapter.OnAddSongListener() {
+                    @Override
+                    public void OnAddSongClick(int position) {
+                        addSong(position);
+                    }
+                });
+                recommendMusicItemAdapter.setMoreOperationListener(new RecommendMusicItemAdapter.OnMoreOperationListener() {
+                    @Override
+                    public void OnMoreOperationClick(int position) {
+                        more(position);
+                        //Log.d("OnMoreOperationClick",songList.get(position).toString());
+                    }
+                });
                // Log.d("songList", JSON.toJSONString(songList));
+            } else if (msg.what==RECOMMEND_MORE_MUSIC_WHAT) {
+                recommendMusicItemAdapter.setSongList(songList);
+                recommendMusicItemAdapter.notifyDataSetChanged();
+                Log.d("songlist count", songList.size()+"");
+                isBottom=false;
             }
         }
     }
