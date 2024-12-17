@@ -32,7 +32,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class MusicPlayerActivity extends AppCompatActivity implements View.OnClickListener {
+public class MusicPlayerActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
     private static final int PLAY_MUSIC_WHAT=1;
     private static final int UI_UPDATE_WHAT=2;
     private SongEntity playSong;
@@ -85,8 +85,8 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         runtime_tv=findViewById(R.id.runtime_tv);
         total_time_tv=findViewById(R.id.total_time_tv);
         previous_music_ib=findViewById(R.id.previous_music_ib);
-        play_stop_ib=findViewById(R.id.play_stop_ib);
         next_music_ib=findViewById(R.id.next_music_ib);
+        play_stop_ib=findViewById(R.id.play_stop_ib);
         play_list_iv=findViewById(R.id.play_list_iv);
         seekBar.setMax(100);
     }
@@ -94,6 +94,8 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         close_music_view_iv.setOnClickListener(this);
         previous_music_ib.setOnClickListener(this);
         play_stop_ib.setOnClickListener(this);
+        next_music_ib.setOnClickListener(this);
+        seekBar.setOnSeekBarChangeListener(this);
     }
     private SongEntity getPlaySong(){
         //Log.d("获取歌曲信息", "getPlaySong: ");
@@ -112,7 +114,6 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
                     // 循环更新进度
                     while (mediaPlayer!=null&&mediaPlayer.isPlaying()) {
                         try {
-                            Thread.sleep(500);
                             final int currentPosition = mediaPlayer.getCurrentPosition();
                             final int duration = mediaPlayer.getDuration();
                             // 计算播放进度的百分比
@@ -128,6 +129,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
                             uiBundle.putInt("currentPercent", percent);
                             updateUIMessage.setData(uiBundle);
                             playMusicHandler.sendMessage(updateUIMessage);
+                            Thread.sleep(500);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -136,39 +138,61 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
             }
         });
     }
-    @Override
-    public void onClick(View v) {
-        int id=v.getId();
-        if (id==close_music_view_iv.getId()){
-            if (mediaPlayer.isPlaying()){
-                mediaPlayer.stop();
-            }
-            flag=false;
-            finish();
-        } else if (id==previous_music_ib.getId()) {
-
-        }else if (id==play_stop_ib.getId()){
-            if(mediaPlayer!=null&&mediaPlayer.isPlaying()){
-                mediaPlayer.pause();
-                play_stop_ib.setImageResource(R.drawable.ic_play);
-            }else{
-                assert mediaPlayer != null;
-                mediaPlayer.start();
-                play_stop_ib.setImageResource(R.drawable.ic_stop);
-            }
+    public void playNextSong(){
+        int index=playListManager.getIndex(playSong)+1<playListManager.getSongList().size()-1?playListManager.getIndex(playSong)+1:playListManager.getSongList().size()-1;
+        playSong=playListManager.getSong(index);
+        if(playInfoThread.isAlive())playInfoThread.interrupt();
+        playInfoThread=new PlayInfoThread();
+        playInfoThread.start();
+    }
+    public void playOrStopMusic(){
+        if(mediaPlayer!=null&&mediaPlayer.isPlaying()){
+            mediaPlayer.pause();
+            play_stop_ib.setImageResource(R.drawable.ic_play);
+        }else{
+            assert mediaPlayer != null;
+            mediaPlayer.start();
+            play_stop_ib.setImageResource(R.drawable.ic_stop);
         }
+    }
+    public void playPreviousSong(){
+        int index=playListManager.getIndex(playSong)-1>0?playListManager.getIndex(playSong)-1:0;
+        playSong=playListManager.getSong(index);
+        if(playInfoThread.isAlive())playInfoThread.interrupt();
+        playInfoThread=new PlayInfoThread();
+        playInfoThread.start();
+    }
+    public void closView(){
+        if (mediaPlayer.isPlaying()){
+            mediaPlayer.stop();
+        }
+        flag=false;
+        finish();
+    }
+    public void resetUI(){
+        song_tv.setText(playSong.getFilename().split("-")[1]);
+        singer_tv.setText(playSong.getFilename().split("-")[0]);
+        runtime_tv.setText(DurationTransUtil.formatTotalTime(0));
+        total_time_tv.setText(DurationTransUtil.formatTotalTime(playSong.getDuration()));
+        seekBar.setProgress(0);
     }
     private void play()  {
         if (playInfo!=null) {
             if (!playInfo.getError().isEmpty()) {
-                play_stop_ib.setImageResource(R.drawable.ic_play);
+                if (mediaPlayer!=null&&mediaPlayer.isPlaying()) {
+                    play_stop_ib.setImageResource(R.drawable.ic_play);
+                    mediaPlayer.stop();
+                    mediaPlayer.reset();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                }
                 ToastUtil.showToast(1000, playInfo.getError(), MusicPlayerActivity.this);
             } else {
                 String path = playInfo.getUrl();
                 //Log.d("TAG", path);
                 try {
                     //更新播放器
-                    if (mediaPlayer.isPlaying()) {
+                    if (mediaPlayer!=null&&mediaPlayer.isPlaying()) {
                         play_stop_ib.setImageResource(R.drawable.ic_play);
                         mediaPlayer.stop();
                         mediaPlayer.reset();
@@ -187,6 +211,19 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         }
     }
     @Override
+    public void onClick(View v) {
+        int id=v.getId();
+        if (id==close_music_view_iv.getId()){
+            closView();
+        } else if (id==previous_music_ib.getId()) {
+            playPreviousSong();
+        }else if (id==play_stop_ib.getId()){
+            playOrStopMusic();
+        }else if (id==next_music_ib.getId()){
+            playNextSong();
+        }
+    }
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mediaPlayer != null) {
@@ -200,7 +237,21 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         }
         if (playInfoThread!=null&&playInfoThread.isAlive()){
             playInfoThread.interrupt();
+            playInfoThread = null;
         }
+    }
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if(mediaPlayer!=null&&fromUser){
+            int duration=mediaPlayer.getDuration();
+            mediaPlayer.seekTo(Math.round(duration * (progress / 100.0f)));
+        }
+    }
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
     }
     private class PlayInfoThread extends Thread{
         @Override
@@ -220,6 +271,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             if (msg.what==PLAY_MUSIC_WHAT){
+                resetUI();
                 play();
             } else if (msg.what==UI_UPDATE_WHAT) {
                     seekBar.setProgress(msg.getData().getInt("currentPercent"));

@@ -132,6 +132,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     public void addSong(int position){
         playListManager.addSong(songList.get(position));
         ToastUtil.showToast(1000,"添加成功",getContext());
+        Log.d("playList", playListManager.getSongList().toString());
         //Log.d("playList", playListManager.getSongList().toString());
     }
     public void more(int position){
@@ -141,7 +142,10 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         if (scrollState == SCROLL_STATE_IDLE ) {
             if (view.getLastVisiblePosition() == view.getCount() - 1) {
-                Log.d("onScrollStateChanged", "触底了");
+                //Log.d("onScrollStateChanged", "触底了");
+               /* page++;
+                params.replace("page",page);
+                Log.d("params", params.toString());*/
                 isBottom=true;
                 recommendMusicThread=new RecommendMusicThread();
                 recommendMusicThread.start();

@@ -1,15 +1,15 @@
 package com.example.mymusicplayerapplication.manager;
 
+import androidx.annotation.Nullable;
+
 import com.example.mymusicplayerapplication.data.model.SongEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlayListManager {
-    //数据库中只用存hash值和url
     /**
-     * @param songList 共享的数据
-     *
+     * 共享的数据
      */
     private List<SongEntity> playList;
     private int index;
@@ -40,4 +40,11 @@ public class PlayListManager {
     public void setSongList(List<SongEntity> songList) {
         this.playList = songList;
     }
+    public int getIndex(SongEntity song){
+        for (int i=0;i<playList.size();i++){
+            if (playList.get(i).getHash().equals(song.getHash()))return i;
+        }
+        return -1;
+    }
+
 }
