@@ -36,36 +36,54 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     private static final int RECOMMEND_MUSIC_WHAT=1;
     private static final int RECOMMEND_MORE_MUSIC_WHAT=2;
     /**
-     * @param params 请求的参数
-     * @param page 请求第几页的数据
-     * @param recommendMusicItemAdapter ListView的适配器
-     * @param iRecommendService 用于获取网络请求
-     * @param songList ListView的数据
-     * @param playListManager 用于管理当前正在播放的数据
-     * @param myHandler 解决message
-     * @param recommend_musics_lv ListView
-     * @param recommend_iv 显示图片
-     * @param isBottom 是否触底加载
-     */
-    private Map params;
+     * 请求的参数
+     * */
+    private Map<String,Object> params;
+    /**
+     * 请求第几页的数据
+     * */
     private int page=1;
+    /**
+     * ListView的适配器
+     * */
     private RecommendMusicItemAdapter recommendMusicItemAdapter;
+    /**
+     * 用于获取网络请求
+     * */
     private IRecommendService iRecommendService;
+    /**
+     * ListView的数据
+     * */
     private List<SongEntity> songList;
+    /**
+     * 用于管理当前正在播放的数据
+     * */
     private PlayListManager playListManager;
+    /**
+     * 解决message
+     * */
     private MyHandler myHandler;
+    /**
+     * 显示图片
+     * */
     private ImageView recommend_iv;
+    /**
+     * ListView
+     * */
     private ListView recommend_musics_lv;
+    /**
+     * 是否触底加载
+     * */
     private boolean isBottom=false;
+    /**
+     * 请求网络的线程
+     * */
     private RecommendMusicThread recommendMusicThread;
     public RecommendMusicFragment() {
     }
-
     public static RecommendMusicFragment newInstance() {
-        RecommendMusicFragment fragment = new RecommendMusicFragment();
-        return fragment;
+        return new RecommendMusicFragment();
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,10 +91,9 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         initRequestParams();
         iRecommendService=RecommendService.getInstance(getContext());
         recommendMusicThread=new RecommendMusicThread();
-        myHandler=new MyHandler();
+        myHandler=new MyHandler(Looper.getMainLooper());
         recommendMusicThread.start();
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,7 +105,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         return view;
     }
     private void initRequestParams(){
-        params=new HashMap();
+        params=new HashMap<>();
         params.put("recommend_expire","0");
         params.put("sign","52186982747e1404d426fa3f2a1e8ee4");
         params.put("plat","0");
@@ -120,7 +137,6 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     public void more(int position){
         Log.d("more",songList.get(position).toString());
     }
-
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         if (scrollState == SCROLL_STATE_IDLE ) {
@@ -132,12 +148,10 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
             }
         }
     }
-
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -145,7 +159,6 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
             recommendMusicThread.interrupt();
         }
     }
-
     class RecommendMusicThread extends Thread{
         @Override
         public void run() {
@@ -161,6 +174,9 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         }
     }
     class MyHandler extends Handler{
+        public MyHandler(Looper looper){
+            super(looper);
+        }
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
@@ -170,18 +186,10 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
                 }
                 recommendMusicItemAdapter=new RecommendMusicItemAdapter(getContext(),songList);
                 recommend_musics_lv.setAdapter(recommendMusicItemAdapter);
-                recommendMusicItemAdapter.setOnAddSongListener(new RecommendMusicItemAdapter.OnAddSongListener() {
-                    @Override
-                    public void OnAddSongClick(int position) {
-                        addSong(position);
-                    }
-                });
-                recommendMusicItemAdapter.setMoreOperationListener(new RecommendMusicItemAdapter.OnMoreOperationListener() {
-                    @Override
-                    public void OnMoreOperationClick(int position) {
-                        more(position);
-                        //Log.d("OnMoreOperationClick",songList.get(position).toString());
-                    }
+                recommendMusicItemAdapter.setOnAddSongListener(position -> addSong(position));
+                recommendMusicItemAdapter.setMoreOperationListener(position -> {
+                    more(position);
+                    //Log.d("OnMoreOperationClick",songList.get(position).toString());
                 });
                // Log.d("songList", JSON.toJSONString(songList));
             } else if (msg.what==RECOMMEND_MORE_MUSIC_WHAT) {
