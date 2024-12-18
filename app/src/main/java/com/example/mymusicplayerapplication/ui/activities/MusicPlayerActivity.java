@@ -7,17 +7,25 @@ import android.util.Log;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.Constraints;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymusicplayerapplication.R;
+import com.example.mymusicplayerapplication.adapter.PlayListItemAdapter;
 import com.example.mymusicplayerapplication.data.model.PlayInfoEntity;
 import com.example.mymusicplayerapplication.data.model.SongEntity;
 import com.example.mymusicplayerapplication.manager.PlayListManager;
@@ -49,11 +57,13 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
     private ImageButton play_stop_ib;
     private ImageButton next_music_ib;
     private ImageView play_list_iv;
+    private PopupWindow playListPopupWindow;
     private MediaPlayer mediaPlayer=new MediaPlayer();
     private PlayInfoThread playInfoThread;
     private PlayMusicHandler playMusicHandler;
     private IMusicPlayService iMusicPlayService;
     private ExecutorService executorService;
+    private PlayListItemAdapter playListItemAdapter;
     private boolean flag=true;
 
     @Override
@@ -65,6 +75,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         initEvent();
         iMusicPlayService = new MusicPlayService(this);
         playListManager = PlayListManager.getInstance();
+        initPlayListPopupWindow();
         playSong = getPlaySong();
         Log.d("playSong", playSong.toString());
         song_tv.setText(playSong.getFilename().split("-")[1]);
@@ -96,6 +107,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         play_stop_ib.setOnClickListener(this);
         next_music_ib.setOnClickListener(this);
         seekBar.setOnSeekBarChangeListener(this);
+        play_list_iv.setOnClickListener(this);
     }
     private SongEntity getPlaySong(){
         //Log.d("获取歌曲信息", "getPlaySong: ");
@@ -138,14 +150,18 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
             }
         });
     }
-    public void playNextSong(){
-        int index=playListManager.getIndex(playSong)+1<playListManager.getSongList().size()-1?playListManager.getIndex(playSong)+1:playListManager.getSongList().size()-1;
+    private void playNewSong(int index){
         playSong=playListManager.getSong(index);
+        playListManager.setIndex(index);
         if(playInfoThread.isAlive())playInfoThread.interrupt();
         playInfoThread=new PlayInfoThread();
         playInfoThread.start();
     }
-    public void playOrStopMusic(){
+    private void playNextSong(){
+        int index=playListManager.getIndex(playSong)+1<playListManager.getSongList().size()-1?playListManager.getIndex(playSong)+1:playListManager.getSongList().size()-1;
+        playNewSong(index);
+    }
+    private void playOrStopMusic(){
         if(mediaPlayer!=null&&mediaPlayer.isPlaying()){
             mediaPlayer.pause();
             play_stop_ib.setImageResource(R.drawable.ic_play);
@@ -155,21 +171,18 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
             play_stop_ib.setImageResource(R.drawable.ic_stop);
         }
     }
-    public void playPreviousSong(){
+    private void playPreviousSong(){
         int index=playListManager.getIndex(playSong)-1>0?playListManager.getIndex(playSong)-1:0;
-        playSong=playListManager.getSong(index);
-        if(playInfoThread.isAlive())playInfoThread.interrupt();
-        playInfoThread=new PlayInfoThread();
-        playInfoThread.start();
+        playNewSong(index);
     }
-    public void closView(){
+    private void closView(){
         if (mediaPlayer.isPlaying()){
             mediaPlayer.stop();
         }
         flag=false;
         finish();
     }
-    public void resetUI(){
+    private void resetUI(){
         song_tv.setText(playSong.getFilename().split("-")[1]);
         singer_tv.setText(playSong.getFilename().split("-")[0]);
         runtime_tv.setText(DurationTransUtil.formatTotalTime(0));
@@ -210,6 +223,33 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
             }
         }
     }
+    private void showPlayListPopupWindow(){
+        View rootView = LayoutInflater.from(this).inflate(R.layout.activity_music_player, null);
+        // 设置弹窗位置
+        playListPopupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
+        // 使得背景亮度变暗
+    }
+    private void initPlayListPopupWindow(){
+        View pwView = LayoutInflater.from(this).inflate(R.layout.pw_playlist, null, false);
+        // 实例化 PopupWindow
+        playListPopupWindow=new PopupWindow(pwView, ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        // 初始化弹窗列表
+        RecyclerView recyclerView = pwView.findViewById(R.id.playlist_rv);
+        playListItemAdapter=new PlayListItemAdapter(playListManager,this);
+        playListItemAdapter.setOnItemClickListener(new PlayListItemAdapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(int index) {
+                playNewSong(index);
+                playListItemAdapter.notifyDataSetChanged();
+            }
+        });
+        recyclerView.setAdapter(playListItemAdapter);
+        // 设置 popupWindow
+        playListPopupWindow.setOutsideTouchable(true);
+        playListPopupWindow.setTouchable(true);
+        playListPopupWindow.setFocusable(true);
+        playListPopupWindow.setAnimationStyle(R.style.pw_bottom_anim_style);
+    }
     @Override
     public void onClick(View v) {
         int id=v.getId();
@@ -221,6 +261,8 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
             playOrStopMusic();
         }else if (id==next_music_ib.getId()){
             playNextSong();
+        } else if (id==play_list_iv.getId()) {
+            showPlayListPopupWindow();
         }
     }
     @Override
@@ -263,7 +305,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
             playMusicHandler.sendMessage(message);
         }
     }
-    class PlayMusicHandler extends Handler{
+    private class PlayMusicHandler extends Handler{
         public PlayMusicHandler(Looper looper){
             super(looper);
         }

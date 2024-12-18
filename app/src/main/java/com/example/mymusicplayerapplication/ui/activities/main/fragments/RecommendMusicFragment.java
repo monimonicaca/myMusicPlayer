@@ -122,6 +122,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         /*这里有可能需要将数据写入数据库*/
         playListManager.addSong(songList.get(position));
+        playListManager.setIndex(playListManager.getSongList().size()-1);
         Intent intent=new Intent(getContext(), MusicPlayerActivity.class);
         Bundle bundle=new Bundle();
         bundle.putSerializable("song",songList.get(position));
@@ -142,10 +143,6 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         if (scrollState == SCROLL_STATE_IDLE ) {
             if (view.getLastVisiblePosition() == view.getCount() - 1) {
-                //Log.d("onScrollStateChanged", "触底了");
-               /* page++;
-                params.replace("page",page);
-                Log.d("params", params.toString());*/
                 isBottom=true;
                 recommendMusicThread=new RecommendMusicThread();
                 recommendMusicThread.start();
@@ -154,7 +151,6 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     }
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
     }
     @Override
     public void onDestroy() {
@@ -199,7 +195,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
             } else if (msg.what==RECOMMEND_MORE_MUSIC_WHAT) {
                 recommendMusicItemAdapter.setSongList(songList);
                 recommendMusicItemAdapter.notifyDataSetChanged();
-                Log.d("songlist count", songList.size()+"");
+                //Log.d("songlist count", songList.size()+"");
                 isBottom=false;
             }
         }

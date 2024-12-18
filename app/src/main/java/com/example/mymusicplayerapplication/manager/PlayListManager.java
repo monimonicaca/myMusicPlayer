@@ -12,6 +12,8 @@ public class PlayListManager {
      * 共享的数据
      */
     private List<SongEntity> playList;
+    /**
+     * 当前正在播放的歌曲*/
     private int index;
     private static PlayListManager playListManager;
     private PlayListManager(){
@@ -22,6 +24,13 @@ public class PlayListManager {
         if (playListManager==null)playListManager=new PlayListManager();
         return playListManager;
     }
+    public int getIndex() {
+        return index;
+    }
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     public SongEntity getSong(int position){
         return playList.get(position);
     }
