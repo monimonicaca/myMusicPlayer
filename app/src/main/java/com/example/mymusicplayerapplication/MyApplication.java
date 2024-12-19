@@ -22,12 +22,15 @@ public class MyApplication extends Application {
         super.onCreate();
         myApplication=this;
         Log.d("启动Application", "onCreate: ");
-       // loginInfo=getSharedPreferences(LOGIN_INFO_FILE_NAME,MODE_PRIVATE);
-       // checkIsLogin();
+        loginInfo=getSharedPreferences(LOGIN_INFO_FILE_NAME,MODE_PRIVATE);
+        checkIsLogin();
     }
     public void checkIsLogin(){
         boolean isLogin=loginInfo.getBoolean("isLogin",false);
+        String account=loginInfo.getString("account","00000");
+        Log.d("isLogin", isLogin+"");
         info.put("isLogin",isLogin);
+        info.put("account",account);
         ISLOGIN=isLogin;
     }
 
@@ -37,9 +40,7 @@ public class MyApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        Log.d("销毁SDK", "onTerminate: ");
     }
-
     @Override
     public void onLowMemory() {
         super.onLowMemory();

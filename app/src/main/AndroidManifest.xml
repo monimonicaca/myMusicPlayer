@@ -24,6 +24,9 @@
         tools:replace="android:allowBackup"
         tools:targetApi="31">
         <activity
+            android:name=".ui.activities.LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.MusicPlayerActivity"
             android:exported="false" />
         <activity

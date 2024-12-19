@@ -7,4 +7,6 @@
     <string name="recommend_fragment_active_title">recommend music</string>
     <string name="playlist_title">PLAY LIST</string>
     <string name="close_btn_string">close</string>
+    <string name="login_button">login</string>
+    <string name="account">account</string>
 </resources>
