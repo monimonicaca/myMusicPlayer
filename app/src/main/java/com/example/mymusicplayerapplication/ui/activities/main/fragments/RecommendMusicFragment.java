@@ -1,6 +1,7 @@
 package com.example.mymusicplayerapplication.ui.activities.main.fragments;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.mymusicplayerapplication.R;
+import com.example.mymusicplayerapplication.helper.AppDbHelper;
 import com.example.mymusicplayerapplication.manager.PlayListManager;
 import com.example.mymusicplayerapplication.ui.activities.MusicPlayerActivity;
 import com.example.mymusicplayerapplication.adapter.RecommendMusicItemAdapter;
@@ -79,6 +81,10 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
      * 请求网络的线程
      * */
     private RecommendMusicThread recommendMusicThread;
+    /**
+     * 操作数据库的Helper
+     * */
+    private AppDbHelper appDbHelper;
     public RecommendMusicFragment() {
     }
     public static RecommendMusicFragment newInstance() {
@@ -87,7 +93,9 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appDbHelper=AppDbHelper.getInstance(getContext());
         playListManager=PlayListManager.getInstance();
+        initPlayList();
         initRequestParams();
         iRecommendService=RecommendService.getInstance(getContext());
         recommendMusicThread=new RecommendMusicThread();
@@ -117,11 +125,13 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         params.put("mid","286974383886022203545511837994020015101");
         params.put("_t","1545746286");
     }
-
+    private void initPlayList(){
+        appDbHelper.openReadLink();
+        playListManager.setSongList(appDbHelper.queryAllSong());
+    }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        /*这里有可能需要将数据写入数据库*/
-        playListManager.addSong(songList.get(position));
+        addSong(position);
         playListManager.setIndex(playListManager.getSongList().size()-1);
         Intent intent=new Intent(getContext(), MusicPlayerActivity.class);
         Bundle bundle=new Bundle();
@@ -131,8 +141,14 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         //Log.d("点击的是", songList.get(position).toString());
     }
     public void addSong(int position){
+        appDbHelper.openWriteLink();
+        boolean result=appDbHelper.insertSong(songList.get(position));
+        if (result){
         playListManager.addSong(songList.get(position));
-        ToastUtil.showToast(1000,"添加成功",getContext());
+        ToastUtil.showToast(500,"添加成功",getContext());
+        }else {
+            ToastUtil.showToast(500,"添加失败",getContext());
+        }
         Log.d("playList", playListManager.getSongList().toString());
         //Log.d("playList", playListManager.getSongList().toString());
     }
@@ -157,6 +173,10 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         super.onDestroy();
         if (recommendMusicThread!=null&&recommendMusicThread.isAlive()){
             recommendMusicThread.interrupt();
+        }
+        if (appDbHelper!=null){
+            appDbHelper.closeLink();
+            appDbHelper.close();
         }
     }
     class RecommendMusicThread extends Thread{

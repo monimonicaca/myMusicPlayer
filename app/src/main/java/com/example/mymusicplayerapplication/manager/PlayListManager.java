@@ -3,6 +3,7 @@ package com.example.mymusicplayerapplication.manager;
 import androidx.annotation.Nullable;
 
 import com.example.mymusicplayerapplication.data.model.SongEntity;
+import com.example.mymusicplayerapplication.helper.AppDbHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,7 @@ public class PlayListManager {
     private int index;
     private static PlayListManager playListManager;
     private PlayListManager(){
-        /*先从数据库中读取数据，如果没有就直接new一个*/
-        playList=new ArrayList<>();
+       playList=new ArrayList<>();
     }
     public static PlayListManager getInstance(){
         if (playListManager==null)playListManager=new PlayListManager();
