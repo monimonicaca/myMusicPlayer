@@ -1,7 +1,6 @@
 package com.example.mymusicplayerapplication.ui.activities.main.fragments;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -78,7 +77,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
      * */
     private boolean isBottom=false;
     /**
-     * 请求网络的线程
+     * 请求网络资源的线程
      * */
     private RecommendMusicThread recommendMusicThread;
     /**
@@ -214,6 +213,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
                // Log.d("songList", JSON.toJSONString(songList));
             } else if (msg.what==RECOMMEND_MORE_MUSIC_WHAT) {
                 recommendMusicItemAdapter.setSongList(songList);
+                recommendMusicItemAdapter.notifyDataSetInvalidated();
                 recommendMusicItemAdapter.notifyDataSetChanged();
                 //Log.d("songlist count", songList.size()+"");
                 isBottom=false;

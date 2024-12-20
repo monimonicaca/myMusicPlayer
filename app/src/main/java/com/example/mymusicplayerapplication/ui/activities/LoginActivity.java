@@ -7,7 +7,6 @@ import static com.example.mymusicplayerapplication.MyApplication.getLoginInfoSha
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -87,7 +86,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (v.getId()==R.id.login_account_et){
             if (hasFocus){
                 item_login_account_layout.setBackgroundResource(R.color.white);
-            }else if (!hasFocus){
+            }else {
                 item_login_account_layout.setBackgroundResource(R.drawable.shape_square_round_default);
             }
         }

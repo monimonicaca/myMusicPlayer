@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -21,7 +20,6 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.Constraints;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymusicplayerapplication.R;
@@ -119,32 +117,29 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
     }
     private void startUiUpdateTask() {
        // Log.d("startUiUpdateTask", "startUiUpdateTask: ");
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                while (flag) {
-                    // 循环更新进度
-                    while (mediaPlayer!=null&&mediaPlayer.isPlaying()) {
-                        try {
-                            final int currentPosition = mediaPlayer.getCurrentPosition();
-                            final int duration = mediaPlayer.getDuration();
-                            // 计算播放进度的百分比
-                            int percent = Math.round((float) currentPosition / duration * 100);
-                            // 计算显示的时间
-                            String runtime = DurationTransUtil.formatRemainingTime(currentPosition);
-                            //Log.d("percent", percent + "");
-                            //Log.d("runtime", runtime);
-                            Message updateUIMessage = new Message();
-                            updateUIMessage.what = UI_UPDATE_WHAT;
-                            Bundle uiBundle = new Bundle();
-                            uiBundle.putString("runtime", runtime);
-                            uiBundle.putInt("currentPercent", percent);
-                            updateUIMessage.setData(uiBundle);
-                            playMusicHandler.sendMessage(updateUIMessage);
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+        executorService.execute(() -> {
+            while (flag) {
+                // 循环更新进度
+                while (mediaPlayer!=null&&mediaPlayer.isPlaying()) {
+                    try {
+                        final int currentPosition = mediaPlayer.getCurrentPosition();
+                        final int duration = mediaPlayer.getDuration();
+                        // 计算播放进度的百分比
+                        int percent = Math.round((float) currentPosition / duration * 100);
+                        // 计算显示的时间
+                        String runtime = DurationTransUtil.formatRemainingTime(currentPosition);
+                        //Log.d("percent", percent + "");
+                        //Log.d("runtime", runtime);
+                        Message updateUIMessage = new Message();
+                        updateUIMessage.what = UI_UPDATE_WHAT;
+                        Bundle uiBundle = new Bundle();
+                        uiBundle.putString("runtime", runtime);
+                        uiBundle.putInt("currentPercent", percent);
+                        updateUIMessage.setData(uiBundle);
+                        playMusicHandler.sendMessage(updateUIMessage);
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        ExceptionHandleUtil.logException(e);
                     }
                 }
             }
@@ -199,7 +194,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
                     mediaPlayer.release();
                     mediaPlayer = null;
                 }
-                ToastUtil.showToast(1000, playInfo.getError(), MusicPlayerActivity.this);
+                ToastUtil.showToast(500, playInfo.getError(), MusicPlayerActivity.this);
             } else {
                 String path = playInfo.getUrl();
                 //Log.d("TAG", path);
@@ -236,12 +231,9 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         // 初始化弹窗列表
         RecyclerView recyclerView = pwView.findViewById(R.id.playlist_rv);
         playListItemAdapter=new PlayListItemAdapter(playListManager,this);
-        playListItemAdapter.setOnItemClickListener(new PlayListItemAdapter.OnItemClickListener() {
-            @Override
-            public void OnItemClick(int index) {
-                playNewSong(index);
-                playListItemAdapter.notifyDataSetChanged();
-            }
+        playListItemAdapter.setOnItemClickListener(index -> {
+            playNewSong(index);
+            playListItemAdapter.notifyDataSetChanged();
         });
         recyclerView.setAdapter(playListItemAdapter);
         // 设置 popupWindow
