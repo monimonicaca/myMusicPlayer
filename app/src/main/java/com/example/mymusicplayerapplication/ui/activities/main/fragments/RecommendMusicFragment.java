@@ -205,6 +205,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
                 }
                 recommendMusicItemAdapter=new RecommendMusicItemAdapter(getContext(),songList);
                 recommend_musics_lv.setAdapter(recommendMusicItemAdapter);
+                recommendMusicItemAdapter.notifyDataSetChanged();
                 recommendMusicItemAdapter.setOnAddSongListener(position -> addSong(position));
                 recommendMusicItemAdapter.setMoreOperationListener(position -> {
                     more(position);
@@ -213,7 +214,6 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
                // Log.d("songList", JSON.toJSONString(songList));
             } else if (msg.what==RECOMMEND_MORE_MUSIC_WHAT) {
                 recommendMusicItemAdapter.setSongList(songList);
-                recommendMusicItemAdapter.notifyDataSetInvalidated();
                 recommendMusicItemAdapter.notifyDataSetChanged();
                 //Log.d("songlist count", songList.size()+"");
                 isBottom=false;

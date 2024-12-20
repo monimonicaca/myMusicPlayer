@@ -232,8 +232,10 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         RecyclerView recyclerView = pwView.findViewById(R.id.playlist_rv);
         playListItemAdapter=new PlayListItemAdapter(playListManager,this);
         playListItemAdapter.setOnItemClickListener(index -> {
+            int oldPosition=playListManager.getIndex();
             playNewSong(index);
-            playListItemAdapter.notifyDataSetChanged();
+            playListItemAdapter.notifyItemChanged(oldPosition);
+            playListItemAdapter.notifyItemChanged(index);
         });
         recyclerView.setAdapter(playListItemAdapter);
         // 设置 popupWindow
