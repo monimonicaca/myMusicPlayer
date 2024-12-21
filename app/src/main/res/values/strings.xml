@@ -9,4 +9,5 @@
     <string name="close_btn_string">close</string>
     <string name="login_button">login</string>
     <string name="account">account</string>
+    <string name="songReport">Song Preference Report</string>
 </resources>

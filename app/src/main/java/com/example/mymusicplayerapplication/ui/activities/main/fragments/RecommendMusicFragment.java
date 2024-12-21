@@ -148,7 +148,6 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         }else {
             ToastUtil.showToast(500,"添加失败",getContext());
         }
-        Log.d("playList", playListManager.getSongList().toString());
         //Log.d("playList", playListManager.getSongList().toString());
     }
     public void more(int position){

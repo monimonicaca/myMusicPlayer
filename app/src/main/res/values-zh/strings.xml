@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">我的音乐播放器</string>
+    <string name="app_welcome_string">欢迎使用</string>
+    <string name="tab_recommend">推荐</string>
+    <string name="tab_user_info">我的</string>
+    <string name="user_fragment_active_title">用户信息</string>
+    <string name="recommend_fragment_active_title">推荐音乐</string>
+    <string name="playlist_title">播放列表</string>
+    <string name="close_btn_string">关闭</string>
+    <string name="login_button">登录</string>
+    <string name="account">账号</string>
+    <string name="songReport">听歌偏好报告</string>
+</resources>

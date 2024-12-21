@@ -307,11 +307,13 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             if (msg.what==PLAY_MUSIC_WHAT){
+                //Log.d("PLAY_MUSIC_WHAT", Thread.currentThread().getName());
                 resetUI();
                 play();
             } else if (msg.what==UI_UPDATE_WHAT) {
                     seekBar.setProgress(msg.getData().getInt("currentPercent"));
                     runtime_tv.setText(msg.getData().getString("runtime"));
+                //Log.d("UI_UPDATE_WHAT", Thread.currentThread().getName());
             }
         }
     }
