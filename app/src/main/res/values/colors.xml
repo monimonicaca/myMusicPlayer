@@ -6,8 +6,8 @@
     <color name="start_activity_bg">#FBF8DC</color>
     <color name="color_default">#FBF8DC</color>
     <color name="color_2">#DEFBDA</color>
-    <color name="color_Active">#DAFBE7</color>
-    <color name="default_bg_color">#F3F2F2</color>
+    <color name="color_Active">#A0F4D6</color>
+    <color name="default_bg_color">#80FBF8DC</color>
     <color name="button_pressed_color">#DAFBE7</color>
     <color name="button_color_default">#FBF8DC</color>
 </resources>

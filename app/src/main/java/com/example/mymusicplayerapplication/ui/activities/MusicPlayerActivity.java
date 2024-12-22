@@ -45,7 +45,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
     private PlayInfoEntity playInfo;
     private PlayListManager playListManager;
     private ImageView close_music_view_iv;
-    private ImageView music_being_iv;
+    private ImageView music_iv;
     private TextView song_tv;
     private TextView singer_tv;
     private SeekBar seekBar;
@@ -87,7 +87,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
     }
     private void initView(){
         close_music_view_iv=findViewById(R.id.close_music_view_iv);
-        music_being_iv=findViewById(R.id.music_being_iv);
+        music_iv=findViewById(R.id.music_iv);
         song_tv=findViewById(R.id.song_tv);
         singer_tv=findViewById(R.id.singer_tv);
         seekBar=findViewById(R.id.seekBar);
@@ -227,7 +227,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
     private void initPlayListPopupWindow(){
         View pwView = LayoutInflater.from(this).inflate(R.layout.pw_playlist, null, false);
         // 实例化 PopupWindow
-        playListPopupWindow=new PopupWindow(pwView, ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        playListPopupWindow=new PopupWindow(pwView, ViewGroup.LayoutParams.MATCH_PARENT,1500);
         // 初始化弹窗列表
         RecyclerView recyclerView = pwView.findViewById(R.id.playlist_rv);
         playListItemAdapter=new PlayListItemAdapter(playListManager,this);

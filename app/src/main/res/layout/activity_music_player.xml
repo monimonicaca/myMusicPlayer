@@ -39,7 +39,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/music_being_iv"
+            android:id="@+id/music_iv"
             android:layout_width="300dp"
             android:layout_height="300dp"
             android:layout_weight="1" />
