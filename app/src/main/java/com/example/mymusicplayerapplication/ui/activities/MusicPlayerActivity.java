@@ -145,16 +145,18 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
             }
         });
     }
-    private void playNewSong(int index){
+    private void playNewSong(int index,int oldIndex){
         playSong=playListManager.getSong(index);
         playListManager.setIndex(index);
+        playListItemAdapter.notifyItemChanged(oldIndex);
+        playListItemAdapter.notifyItemChanged(index);
         if(playInfoThread.isAlive())playInfoThread.interrupt();
         playInfoThread=new PlayInfoThread();
         playInfoThread.start();
     }
     private void playNextSong(){
         int index=playListManager.getIndex(playSong)+1<playListManager.getSongList().size()-1?playListManager.getIndex(playSong)+1:playListManager.getSongList().size()-1;
-        playNewSong(index);
+        playNewSong(index,playListManager.getIndex());
     }
     private void playOrStopMusic(){
         if(mediaPlayer!=null&&mediaPlayer.isPlaying()){
@@ -168,10 +170,10 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
     }
     private void playPreviousSong(){
         int index=playListManager.getIndex(playSong)-1>0?playListManager.getIndex(playSong)-1:0;
-        playNewSong(index);
+        playNewSong(index,playListManager.getIndex());
     }
     private void closView(){
-        if (mediaPlayer.isPlaying()){
+        if (mediaPlayer!=null&&mediaPlayer.isPlaying()){
             mediaPlayer.stop();
         }
         flag=false;
@@ -222,7 +224,6 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         View rootView = LayoutInflater.from(this).inflate(R.layout.activity_music_player, null);
         // 设置弹窗位置
         playListPopupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
-        // 使得背景亮度变暗
     }
     private void initPlayListPopupWindow(){
         View pwView = LayoutInflater.from(this).inflate(R.layout.pw_playlist, null, false);
@@ -233,9 +234,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         playListItemAdapter=new PlayListItemAdapter(playListManager,this);
         playListItemAdapter.setOnItemClickListener(index -> {
             int oldPosition=playListManager.getIndex();
-            playNewSong(index);
-            playListItemAdapter.notifyItemChanged(oldPosition);
-            playListItemAdapter.notifyItemChanged(index);
+            playNewSong(index,oldPosition);
         });
         recyclerView.setAdapter(playListItemAdapter);
         // 设置 popupWindow
@@ -313,6 +312,9 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
             } else if (msg.what==UI_UPDATE_WHAT) {
                     seekBar.setProgress(msg.getData().getInt("currentPercent"));
                     runtime_tv.setText(msg.getData().getString("runtime"));
+                    float degree = music_iv.getRotation() + 50;
+                    if(degree >= 360) degree = 0;
+                    music_iv.setRotation(degree);
                 //Log.d("UI_UPDATE_WHAT", Thread.currentThread().getName());
             }
         }

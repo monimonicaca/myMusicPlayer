@@ -40,9 +40,10 @@
 
         <ImageView
             android:id="@+id/music_iv"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_weight="1" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/image_disc"/>
     </LinearLayout>
 
     <LinearLayout

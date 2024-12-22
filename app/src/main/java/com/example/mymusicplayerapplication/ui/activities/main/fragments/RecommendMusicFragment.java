@@ -138,7 +138,6 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         addSong(position);
-        playListManager.setIndex(playListManager.getSongList().size()-1);
         Intent intent=new Intent(getContext(), MusicPlayerActivity.class);
         Bundle bundle=new Bundle();
         bundle.putSerializable("song",songList.get(position));
@@ -151,6 +150,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         boolean result=appDbHelper.insertSong(songList.get(position));
         if (result){
         playListManager.addSong(songList.get(position));
+        playListManager.setIndex(playListManager.getSongList().size()-1);
         ToastUtil.showToast(500,"添加成功",getContext());
         }else {
             ToastUtil.showToast(500,"添加失败",getContext());
