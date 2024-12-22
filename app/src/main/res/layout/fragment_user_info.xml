@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.activities.main.fragments.UserInfoFragment"
     android:id="@+id/user_info_fragment"
     android:orientation="vertical"
@@ -43,7 +44,15 @@
                 android:text="@string/songReport"
                 android:textSize="@dimen/text_size_medium"
                 android:fontFamily="@font/default_font" />
-
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animation_loading"
+                android:layout_width="@dimen/loading_anim_size"
+                android:layout_height="@dimen/loading_anim_size"
+                app:lottie_rawRes="@raw/loading_anim"
+                android:layout_gravity="center"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true"
+                android:visibility="gone"/>
             <TextView
                 android:id="@+id/song_report_tv"
                 android:padding="4dp"

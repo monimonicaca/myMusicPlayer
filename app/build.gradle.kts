@@ -39,4 +39,5 @@ dependencies {
     implementation (libs.appcompat)
     implementation ("androidx.recyclerview:recyclerview:1.3.0")
     implementation ("com.alibaba.fastjson2:fastjson2:2.0.53")
+    implementation ("com.airbnb.android:lottie:6.6.2")
 }

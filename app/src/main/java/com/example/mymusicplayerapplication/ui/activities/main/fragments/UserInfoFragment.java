@@ -15,9 +15,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.mymusicplayerapplication.R;
 import com.example.mymusicplayerapplication.data.model.SongEntity;
 import com.example.mymusicplayerapplication.manager.PlayListManager;
@@ -37,6 +39,7 @@ public class UserInfoFragment extends Fragment {
     private static final int RESPONSE_ERROR_WHAT=2;
     private TextView account_tv;
     private TextView song_report_tv;
+    private LottieAnimationView animation_loading;
     private Responsethread responsethread;
     private ResponseHandler responseHandler;
 
@@ -65,6 +68,8 @@ public class UserInfoFragment extends Fragment {
         if (ISLOGIN){
             account_tv.setText(getInstance().info.get("account").toString());
         }
+        animation_loading=view.findViewById(R.id.animation_loading);
+        animation_loading.setVisibility(View.VISIBLE);
         return view;
     }
     class Responsethread extends Thread{
@@ -125,7 +130,10 @@ public class UserInfoFragment extends Fragment {
                 String result=new JSONObject(data).getJSONObject("data").getString("result");
                 //Log.d("ResponseHandlerThread", Thread.currentThread().getName());
                 //Log.d("Looper.getMainLooper()", Looper.getMainLooper().toString());
-                post(() -> song_report_tv.setText(result));
+                post(() -> {
+                    song_report_tv.setText(result);
+                    animation_loading.setVisibility(View.GONE);
+                });
                 Log.d("success", result);
             } catch (JSONException e) {
                 throw new RuntimeException(e);
