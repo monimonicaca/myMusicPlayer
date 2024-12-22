@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.mymusicplayerapplication.R;
 import com.example.mymusicplayerapplication.helper.AppDbHelper;
 import com.example.mymusicplayerapplication.manager.PlayListManager;
@@ -73,6 +74,10 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
      * */
     private ListView recommend_musics_lv;
     /**
+     * 加载动画
+     * */
+    private LottieAnimationView animation_loading;
+    /**
      * 是否触底加载
      * */
     private boolean isBottom=false;
@@ -107,8 +112,10 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         View view=inflater.inflate(R.layout.fragment_recommend_music, container, false);
         recommend_musics_lv=view.findViewById(R.id.recommend_musics_lv);
         recommend_iv=view.findViewById(R.id.recommend_iv);
+        animation_loading=view.findViewById(R.id.animation_loading);
         recommend_musics_lv.setOnItemClickListener(this);
         recommend_musics_lv.setOnScrollListener(this);
+        animation_loading.setVisibility(View.VISIBLE);
         return view;
     }
     private void initRequestParams(){
@@ -210,6 +217,7 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
                     more(position);
                     //Log.d("OnMoreOperationClick",songList.get(position).toString());
                 });
+                animation_loading.setVisibility(View.GONE);
                // Log.d("songList", JSON.toJSONString(songList));
             } else if (msg.what==RECOMMEND_MORE_MUSIC_WHAT) {
                 recommendMusicItemAdapter.setSongList(songList);
