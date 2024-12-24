@@ -10,4 +10,10 @@
     <string name="login_button">登录</string>
     <string name="account">账号</string>
     <string name="songReport">听歌偏好报告</string>
+    <string name="add_song_success">添加成功</string>
+    <string name="add_song_fail">添加失败</string>
+    <string name="READ_PHONE_STATE_permession_denied">打开READ_PHONE_STATE权限失败,即将跳转到设置界面</string>
+    <string name="ACCESS_NETWORK_STATE_permession_denied">打开ACCESS_NETWORK_STATE权限失败,即将跳转到设置界面</string>
+    <string name="INTERNET_CODE_permession_denied">打开INTERNET_CODE权限失败,即将跳转到设置界面</string>
+    <string name="login_account_null">请输入账号</string>
 </resources>

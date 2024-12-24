@@ -10,4 +10,11 @@
     <string name="login_button">login</string>
     <string name="account">account</string>
     <string name="songReport">Song Preference Report</string>
+    <string name="add_song_success">add to playlist success</string>
+    <string name="add_song_fail">add to playlist fail</string>
+    <string name="READ_PHONE_STATE_permession_denied">Failed to open READ_PHONE_STATE permissions, and you will be redirected to the settings interface</string>
+    <string name="ACCESS_NETWORK_STATE_permession_denied">Failed to open ACCESS_NETWORK_STATE permissions, and you will be redirected to the settings interface</string>
+    <string name="INTERNET_CODE_permession_denied">Failed to open INTERNET_CODE permissions, and you will be redirected to the settings page</string>
+    <string name="login_account_null">Please enter the account number</string>
+
 </resources>

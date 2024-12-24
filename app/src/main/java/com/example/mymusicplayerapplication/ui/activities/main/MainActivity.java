@@ -154,21 +154,21 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
             case READ_PHONE_STATE_CODE:
                 boolean check=CheckPermissionUtil.checkResultCode(grantResults);
                 if (!check){
-                    ToastUtil.showToast(1000,"打开READ_PHONE_STATE权限失败,即将跳转到设置界面",this);
+                    ToastUtil.showToast(500,getString(R.string.READ_PHONE_STATE_permession_denied),this);
                     jumpToSettings();
                 }
                 break;
             case ACCESS_NETWORK_STATE_CODE:
                 boolean check2=CheckPermissionUtil.checkResultCode(grantResults);
                 if (!check2){
-                    ToastUtil.showToast(1000,"打开ACCESS_NETWORK_STATE权限失败,即将跳转到设置界面",this);
+                    ToastUtil.showToast(500,getString(R.string.ACCESS_NETWORK_STATE_permession_denied),this);
                     jumpToSettings();
                 }
                 break;
             case INTERNET_CODE:
                 boolean check3=CheckPermissionUtil.checkResultCode(grantResults);
                 if (!check3){
-                    ToastUtil.showToast(1000,"打开INTERNET_CODE权限失败,即将跳转到设置界面",this);
+                    ToastUtil.showToast(500,getString(R.string.INTERNET_CODE_permession_denied),this);
                     jumpToSettings();
                 }
                 break;

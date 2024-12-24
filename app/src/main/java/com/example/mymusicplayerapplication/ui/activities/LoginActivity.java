@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(intent);
                 finish();
             }else {
-                ToastUtil.showToast(1000,"请输入账号",this);
+                ToastUtil.showToast(500,getString(R.string.login_account_null),this);
             }
         }
     }
