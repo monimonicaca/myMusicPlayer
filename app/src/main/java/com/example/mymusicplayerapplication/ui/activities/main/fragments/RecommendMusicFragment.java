@@ -178,10 +178,18 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         super.onDestroy();
         if (recommendMusicThread!=null&&recommendMusicThread.isAlive()){
             recommendMusicThread.interrupt();
+            try {
+                recommendMusicThread.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
         if (appDbHelper!=null){
             appDbHelper.closeLink();
             appDbHelper.close();
+        }
+        if (myHandler!=null){
+            myHandler.removeCallbacksAndMessages(null);
         }
     }
     class RecommendMusicThread extends Thread{

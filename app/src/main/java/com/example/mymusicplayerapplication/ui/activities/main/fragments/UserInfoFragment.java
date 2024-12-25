@@ -140,4 +140,20 @@ public class UserInfoFragment extends Fragment {
             }
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (responseHandler != null) {
+            responseHandler.removeCallbacksAndMessages(null);
+        }
+        if (responsethread!=null&&responsethread.isAlive()){
+            responsethread.interrupt();
+            try {
+                responsethread.join(); // 等待线程结束
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // 重新设置中断状态
+            }
+        }
+    }
 }

@@ -23,7 +23,7 @@ public class RecommendService implements IRecommendService {
     private static RecommendService recommendService;
     private List<SongEntity> songList;
     private RecommendService(Context context) {
-        mContext=context;
+        mContext=context.getApplicationContext();
         songList=new ArrayList<>();
     }
     public static RecommendService getInstance(Context context){

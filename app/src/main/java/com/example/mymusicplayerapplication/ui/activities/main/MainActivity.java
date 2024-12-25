@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         tab_recommend_rb=findViewById(R.id.tab_recommend_rb);
         tab_user_rb=findViewById(R.id.tab_user_rb);
         recommendMusicFragment=RecommendMusicFragment.newInstance();
-        userInfoFragment=UserInfoFragment.newInstance();
+
         /*
          * 设置页面启动的显示的fragment*/
         fragmentManager=getSupportFragmentManager();
