@@ -27,7 +27,7 @@
             android:name=".ui.activities.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.MusicPlayerActivity"
+            android:name=".ui.activities.musicplayer.MusicPlayerActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activities.main.MainActivity"

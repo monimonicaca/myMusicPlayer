@@ -1,4 +1,4 @@
-package com.example.mymusicplayerapplication.adapter;
+package com.example.mymusicplayerapplication.ui.activities.main.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

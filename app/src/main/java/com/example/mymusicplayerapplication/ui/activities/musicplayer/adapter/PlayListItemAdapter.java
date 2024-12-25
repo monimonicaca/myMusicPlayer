@@ -1,7 +1,6 @@
-package com.example.mymusicplayerapplication.adapter;
+package com.example.mymusicplayerapplication.ui.activities.musicplayer.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

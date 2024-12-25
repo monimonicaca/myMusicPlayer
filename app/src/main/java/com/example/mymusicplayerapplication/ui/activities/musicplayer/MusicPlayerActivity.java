@@ -1,4 +1,4 @@
-package com.example.mymusicplayerapplication.ui.activities;
+package com.example.mymusicplayerapplication.ui.activities.musicplayer;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -23,7 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymusicplayerapplication.R;
-import com.example.mymusicplayerapplication.adapter.PlayListItemAdapter;
+import com.example.mymusicplayerapplication.ui.activities.musicplayer.adapter.PlayListItemAdapter;
 import com.example.mymusicplayerapplication.data.model.PlayInfoEntity;
 import com.example.mymusicplayerapplication.data.model.SongEntity;
 import com.example.mymusicplayerapplication.manager.PlayListManager;
