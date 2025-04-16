@@ -23,7 +23,7 @@ public class MusicPlayService implements IMusicPlayService {
     private Context mContext;
 
     public MusicPlayService(Context mContext) {
-        this.mContext = mContext;
+        this.mContext=mContext;
     }
 
     @Override

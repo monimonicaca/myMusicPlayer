@@ -1,5 +1,6 @@
 package com.example.mymusicplayerapplication.ui.activities.main.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -20,7 +21,9 @@ import android.widget.ListView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.mymusicplayerapplication.R;
+import com.example.mymusicplayerapplication.database.AppDatabase;
 import com.example.mymusicplayerapplication.helper.AppDbHelper;
+import com.example.mymusicplayerapplication.helper.ExcutorsHelper;
 import com.example.mymusicplayerapplication.manager.PlayListManager;
 import com.example.mymusicplayerapplication.ui.activities.musicplayer.MusicPlayerActivity;
 import com.example.mymusicplayerapplication.ui.activities.main.adapter.RecommendMusicItemAdapter;
@@ -33,6 +36,12 @@ import com.example.mymusicplayerapplication.utils.ToastUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class RecommendMusicFragment extends Fragment implements AdapterView.OnItemClickListener, AbsListView.OnScrollListener {
     private static final int RECOMMEND_MUSIC_WHAT=1;
@@ -84,11 +93,13 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     /**
      * 请求网络资源的线程
      * */
-    private RecommendMusicThread recommendMusicThread;
+    //private RecommendMusicThread recommendMusicThread;
     /**
      * 操作数据库的Helper
      * */
     private AppDbHelper appDbHelper;
+    private AppDatabase appDatabase;
+    private ExcutorsHelper excutorsHelper;
     public RecommendMusicFragment() {
     }
     public static RecommendMusicFragment newInstance() {
@@ -97,14 +108,17 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        appDbHelper=AppDbHelper.getInstance(getContext());
+        //appDbHelper=AppDbHelper.getInstance(getContext());
         playListManager=PlayListManager.getInstance();
+        excutorsHelper=ExcutorsHelper.getInstance();
+        appDatabase=AppDatabase.getInstance(getActivity());
         initPlayList();
         initRequestParams();
         iRecommendService=RecommendService.getInstance(getContext());
-        recommendMusicThread=new RecommendMusicThread();
+        //recommendMusicThread=new RecommendMusicThread();
         myHandler=new MyHandler(Looper.getMainLooper());
-        recommendMusicThread.start();
+        getMoreMusic();
+        //recommendMusicThread.start();
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -132,8 +146,13 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         params.put("_t","1545746286");
     }
     private void initPlayList(){
-        appDbHelper.openReadLink();
-        playListManager.setSongList(appDbHelper.queryAllSong());
+        //appDbHelper.openReadLink();
+        //playListManager.setSongList(appDbHelper.queryAllSong());
+        excutorsHelper.roomExecutorService.execute(()->{
+            List<SongEntity> songs=appDatabase.SongDao().loadAll();
+            playListManager.setSongList(songs);
+        });
+
     }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -146,14 +165,27 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         //Log.d("点击的是", songList.get(position).toString());
     }
     public void addSong(int position){
-        appDbHelper.openWriteLink();
-        boolean result=appDbHelper.insertSong(songList.get(position));
-        if (result){
-        playListManager.addSong(songList.get(position));
-        playListManager.setIndex(playListManager.getSongList().size()-1);
-        ToastUtil.showToast(500,getString(R.string.add_song_success),getContext());
+       //appDbHelper.openWriteLink();
+       //boolean result=appDbHelper.insertSong(songList.get(position));
+        Callable<Long> addSongTask=()->{
+            long result=  appDatabase.SongDao().insertSongs(songList.get(position));
+            return result;
+        };
+       Future<Long> resultFutrue= excutorsHelper.roomExecutorService.submit(addSongTask);
+        long result= -1;
+        try {
+            result = resultFutrue.get();
+        } catch (ExecutionException e) {
+            ExceptionHandleUtil.logException(e);
+        } catch (InterruptedException e) {
+            ExceptionHandleUtil.logException(e);
+        }
+        if (result!=-1){
+            playListManager.addSong(songList.get(position));
+            playListManager.setIndex(playListManager.getSongList().size()-1);
+            ToastUtil.showToast(500,getString(R.string.add_song_success),getActivity().getApplicationContext());
         }else {
-            ToastUtil.showToast(500,getString(R.string.add_song_fail),getContext());
+            ToastUtil.showToast(500,getString(R.string.add_song_fail),getActivity().getApplicationContext());
         }
         //Log.d("playList", playListManager.getSongList().toString());
     }
@@ -165,10 +197,24 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
         if (scrollState == SCROLL_STATE_IDLE ) {
             if (view.getLastVisiblePosition() == view.getCount() - 1) {
                 isBottom=true;
-                recommendMusicThread=new RecommendMusicThread();
-                recommendMusicThread.start();
+               // recommendMusicThread=new RecommendMusicThread();
+              //  recommendMusicThread.start();
+                getMoreMusic();
             }
         }
+    }
+    private void getMoreMusic(){
+        excutorsHelper.netExecutorService.execute(()->{
+            songList=iRecommendService.getRecommendSongList(params);
+            Message message=new Message();
+            if(isBottom){
+                message.what=RECOMMEND_MORE_MUSIC_WHAT;
+            }else {
+                message.what = RECOMMEND_MUSIC_WHAT;
+            }
+            myHandler.sendMessage(message);
+        });
+
     }
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
@@ -176,18 +222,21 @@ public class RecommendMusicFragment extends Fragment implements AdapterView.OnIt
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (recommendMusicThread!=null&&recommendMusicThread.isAlive()){
+        if(!excutorsHelper.netExecutorService.isShutdown()){
+            excutorsHelper.netExecutorService.shutdown();
+        }
+        /*if (recommendMusicThread!=null&&recommendMusicThread.isAlive()){
             recommendMusicThread.interrupt();
             try {
                 recommendMusicThread.join();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        }
-        if (appDbHelper!=null){
+        }*/
+        /*if (appDbHelper!=null){
             appDbHelper.closeLink();
             appDbHelper.close();
-        }
+        }*/
         if (myHandler!=null){
             myHandler.removeCallbacksAndMessages(null);
         }

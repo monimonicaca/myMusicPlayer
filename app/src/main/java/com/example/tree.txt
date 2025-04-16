@@ -1,0 +1,56 @@
+Folder PATH listing for volume Data
+Volume serial number is 287D-5BD3
+D:.
+│   tree.txt
+│   
+└───mymusicplayerapplication
+    │   MyApplication.java
+    │   
+    ├───data
+    │   └───model
+    │           PlayInfoEntity.java
+    │           SongEntity.java
+    │           
+    ├───helper
+    │       AppDbHelper.java
+    │       
+    ├───manager
+    │   │   PlayListManager.java
+    │   │   PreferenceAnalyze.java
+    │   │   
+    │   └───service
+    │       │   IMusicPlayService.java
+    │       │   IRecommendService.java
+    │       │   
+    │       └───impl
+    │               MusicPlayService.java
+    │               RecommendService.java
+    │               
+    ├───ui
+    │   └───activities
+    │       │   LoginActivity.java
+    │       │   SplashActivity.java
+    │       │   
+    │       ├───main
+    │       │   │   MainActivity.java
+    │       │   │   
+    │       │   ├───adapter
+    │       │   │       RecommendMusicItemAdapter.java
+    │       │   │       
+    │       │   └───fragments
+    │       │           RecommendMusicFragment.java
+    │       │           UserInfoFragment.java
+    │       │           
+    │       └───musicplayer
+    │           │   MusicPlayerActivity.java
+    │           │   
+    │           └───adapter
+    │                   PlayListItemAdapter.java
+    │                   
+    └───utils
+            CheckPermissionUtil.java
+            DurationTransUtil.java
+            ExceptionHandleUtil.java
+            NetUtil.java
+            ToastUtil.java
+            

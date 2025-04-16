@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymusicplayerapplication.R;
+import com.example.mymusicplayerapplication.helper.ExcutorsHelper;
 import com.example.mymusicplayerapplication.ui.activities.musicplayer.adapter.PlayListItemAdapter;
 import com.example.mymusicplayerapplication.data.model.PlayInfoEntity;
 import com.example.mymusicplayerapplication.data.model.SongEntity;
@@ -62,6 +63,8 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
     private IMusicPlayService iMusicPlayService;
     private ExecutorService executorService;
     private PlayListItemAdapter playListItemAdapter;
+    private ExcutorsHelper excutorsHelper;
+    private MusicLoader musicLoader;
     private boolean flag=true;
 
     @Override
@@ -73,16 +76,18 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         initEvent();
         iMusicPlayService = new MusicPlayService(this);
         playListManager = PlayListManager.getInstance();
+        musicLoader=MusicLoader.getInstance(this);
         initPlayListPopupWindow();
         playSong = getPlaySong();
         Log.d("playSong", playSong.toString());
         song_tv.setText(playSong.getFilename().split("-")[1]);
         singer_tv.setText(playSong.getFilename().split("-")[0]);
         total_time_tv.setText(DurationTransUtil.formatTotalTime(playSong.getDuration()));
-        playInfoThread = new PlayInfoThread();
+        //playInfoThread = new PlayInfoThread();
         playMusicHandler = new PlayMusicHandler(Looper.getMainLooper());
-        playInfoThread.start();
+        //playInfoThread.start();
         executorService= Executors.newSingleThreadExecutor();
+        excutorsHelper=ExcutorsHelper.getInstance();
         startUiUpdateTask();
     }
     private void initView(){
@@ -150,9 +155,10 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
         playListManager.setIndex(index);
         playListItemAdapter.notifyItemChanged(oldIndex);
         playListItemAdapter.notifyItemChanged(index);
-        if(playInfoThread.isAlive())playInfoThread.interrupt();
-        playInfoThread=new PlayInfoThread();
-        playInfoThread.start();
+//        if(playInfoThread.isAlive())playInfoThread.interrupt();
+//        playInfoThread=new PlayInfoThread();
+//        playInfoThread.start();
+        getPlayInfo();
     }
     private void playNextSong(){
         int index=playListManager.getIndex(playSong)+1<playListManager.getSongList().size()-1?playListManager.getIndex(playSong)+1:playListManager.getSongList().size()-1;
@@ -287,6 +293,12 @@ public class MusicPlayerActivity extends AppCompatActivity implements View.OnCli
     }
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
+    }
+    private void getPlayInfo(){
+        playInfo= musicLoader.loadSong(playSong.getHash());
+        Message message=new Message();
+        message.what=PLAY_MUSIC_WHAT;
+        playMusicHandler.sendMessage(message);
     }
     private class PlayInfoThread extends Thread{
         @Override

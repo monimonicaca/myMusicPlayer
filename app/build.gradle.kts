@@ -40,4 +40,7 @@ dependencies {
     implementation ("androidx.recyclerview:recyclerview:1.3.0")
     implementation ("com.alibaba.fastjson2:fastjson2:2.0.53")
     implementation ("com.airbnb.android:lottie:6.6.2")
+    val room_version = "2.6.1"
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
 }

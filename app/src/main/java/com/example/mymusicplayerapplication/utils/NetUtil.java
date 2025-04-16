@@ -58,6 +58,7 @@ public class NetUtil {
 
             }
             conn.setRequestProperty("User-agent", userAgent);
+            conn.setRequestProperty("Content-Type","application/json");
             //新加的
             conn.setDoInput(true);
 

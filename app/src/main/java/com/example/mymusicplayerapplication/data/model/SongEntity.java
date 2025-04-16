@@ -1,10 +1,17 @@
 package com.example.mymusicplayerapplication.data.model;
 
+import androidx.room.Entity;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+
 import com.alibaba.fastjson2.annotation.JSONField;
 
 import java.io.Serializable;
-
+@Entity(tableName = "playlist",indices = {@Index(value = {"hash"},
+        unique = true)})
 public class SongEntity implements Serializable {
+    @PrimaryKey(autoGenerate=true)
+    public int id;
     private String hash;
     private String sqhash;
     @JSONField(name = "320hash")
